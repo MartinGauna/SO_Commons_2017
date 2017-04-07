@@ -8,8 +8,18 @@
 #ifndef CONFIGCONSOLA_H_
 #define CONFIGCONSOLA_H_
 
-#include "structConsola.h"
+typedef struct {
+	char* IP_KERNEL;
+	int PUERTO_KERNELL;
+} t_regConfig;
 
-t_regConfig getConfigParams();
+//Lee el archivo de configuracion de la consola y crea el struct correspondiente
+t_regConfig leeArchConfigConsola();
+
+//Setea e imprime el valor del puerto leido desde el archivo de configuracion
+void setPUERTO(int* valorSet, char* valorBuscado);
+
+//Setea e imprime el valor del IP leido desde el archivo de configuracion
+void setIP(char** valorSet, char* valorBuscado);
 
 #endif /* CONFIGCONSOLA_H_ */
