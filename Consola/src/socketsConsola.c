@@ -9,9 +9,9 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 
-struct cliente newClient(char* ip, int puerto){
+t_cliente newClient(char* ip, int puerto){
 
-	struct cliente* newCliente = malloc(sizeof(struct cliente));
+	t_cliente* newCliente = malloc(sizeof(struct cliente));
 	newSocket(&((*newCliente).socketCliente));
 
     if(((*newCliente).destino.sin_addr.s_addr = inet_addr(ip)) == INADDR_NONE) {
@@ -34,7 +34,7 @@ void newSocket(int* socketNuevo) {
 	}
 }
 
-int connectServer(struct cliente unCliente) {
+int connectServer(t_cliente unCliente) {
 
 	if((connect(&(unCliente.socketCliente), &(unCliente.destino), sizeof(struct sockaddr))) == -1) {
 		perror("Error de coneccion.");

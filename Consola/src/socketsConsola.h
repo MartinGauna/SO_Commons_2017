@@ -19,7 +19,7 @@ typedef struct {
 } t_cliente;
 
 //Crea un nuevo cliente
-struct cliente newClient(char* ip, int puerto);
+t_cliente newClient(char* ip, int puerto);
 
 //Crea un nuevo socket
 void newSocket(int* socketNuevo);

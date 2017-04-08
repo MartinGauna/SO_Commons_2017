@@ -19,7 +19,7 @@ int main(void) {
 
 	t_regConfig archConfig = leeArchConfigConsola("../archivoConfiguracionConsola.cfg");
 
-	struct cliente consola = newClient(archConfig.IP_KERNEL, archConfig.PUERTO_KERNELL);
+	t_cliente consola = newClient(archConfig.IP_KERNEL, archConfig.PUERTO_KERNELL);
 
 	while((connectServer(consola)) == -1) {
 		printf("CONSOLA: Error al intentar conectar con el Kernel, se realizara un "
