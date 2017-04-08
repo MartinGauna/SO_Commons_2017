@@ -123,7 +123,7 @@ char* handShakeClient(int socketServer, char* message) {
 		return msgReturn;
 	}
 
-	if(sendMessage(socketServer, message) == -1) {
+	if(sendMessageToServer(socketServer, message) == -1) {
 		msgReturn = (char*)realloc(msgReturn, strlen("Error al enviar el mensaje."));
 		strcpy(msgReturn, "Error al enviar el mensaje.");
 		perror(msgReturn);

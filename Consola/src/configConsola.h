@@ -11,10 +11,10 @@
 typedef struct {
 	char* IP_KERNEL;
 	int PUERTO_KERNELL;
-} t_regConfig;
+} t_regConfig; //cambiar nombre por t_configConsola
 
-//Lee el archivo de configuracion de la consola y crea el struct correspondiente
-t_regConfig leeArchConfigConsola();
+//Lee el archivo de configuracion que se pasa por parametro de la consola y crea el struct correspondiente
+t_regConfig leeArchConfigConsola(char* path);
 
 //Setea e imprime el valor del puerto leido desde el archivo de configuracion
 void setPUERTO(int* valorSet, char* valorBuscado);

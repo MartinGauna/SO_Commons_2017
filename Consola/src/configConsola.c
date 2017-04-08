@@ -8,15 +8,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <commons/config.h>
-#include "structConsola.h"
+#include "configConsola.h"
 
-t_config * Config = NULL;
+t_config *Config = NULL;
+char* path = NULL;
 
-t_regConfig leeArchConfigConsola() {
+t_regConfig leeArchConfigConsola(char* unPath) {
 
-	char * path = "../archivoConfiguracionConsola.cfg";
+	path = unPath;
 	Config = config_create(path);
-	t_regConfig* punteroConfig = malloc(sizeof(int) + sizeof(char*));
+	t_regConfig* punteroConfig = malloc((sizeof(int) + sizeof(char*)));
 	t_regConfig configuracion = *punteroConfig;
 	setIP(&configuracion.IP_KERNEL,"IP_KERNEL");
 	setPUERTO(&configuracion.PUERTO_KERNELL, "PUERTO_KERNEL");

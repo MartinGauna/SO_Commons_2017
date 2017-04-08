@@ -17,7 +17,8 @@
 
 int main(void) {
 
-	t_regConfig archConfig = leerArchiConfigConsola();
+	t_regConfig archConfig = leeArchConfigConsola("../archivoConfiguracionConsola.cfg");
+
 	struct cliente consola = newClient(archConfig.IP_KERNEL, archConfig.PUERTO_KERNELL);
 
 	while((connectServer(consola)) == -1) {

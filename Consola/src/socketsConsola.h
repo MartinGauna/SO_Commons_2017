@@ -13,10 +13,10 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 
-struct cliente {
+typedef struct {
 	int socketCliente;
 	struct sockaddr_in destino;
-};
+} t_cliente;
 
 //Crea un nuevo cliente
 struct cliente newClient(char* ip, int puerto);
