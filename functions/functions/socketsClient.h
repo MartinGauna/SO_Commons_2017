@@ -1,12 +1,12 @@
 /*
- * socketsConsola.h
+ * socketsClient.h
  *
- *  Created on: 7/4/2017
+ *  Created on: 11/4/2017
  *      Author: utnso
  */
 
-#ifndef SOCKETSCONSOLA_H_
-#define SOCKETSCONSOLA_H_
+#ifndef FUNCTIONS_SOCKETSCLIENT_H_
+#define FUNCTIONS_SOCKETSCLIENT_H_
 
 #include <sys/socket.h>
 #include <stdio.h>
@@ -25,7 +25,7 @@ t_cliente newClient(char* ip, int puerto);
 void newSocket(int* socketNuevo);
 
 //Conectarse a un sevidor
-int connectServer(struct cliente unCliente);
+int connectServer(t_cliente unCliente);
 
 //Enviar un mensaje al servidor. Devuelve 0 en caso de ser correcto y -1 en caso de fallar
 int sendMessageToServer(int socketDestino, char* message);
@@ -41,4 +41,5 @@ char* chattingWithProcess(int socketProcess, char* message);
 
 //Hacer un handshake con el servidor
 char* handShakeClient(int socketServer, char* message);
-#endif /* SOCKETSCONSOLA_H_ */
+
+#endif /* FUNCTIONS_SOCKETSCLIENT_H_ */

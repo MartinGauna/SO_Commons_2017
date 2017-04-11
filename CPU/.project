@@ -3,6 +3,7 @@
 	<name>CPU</name>
 	<comment></comment>
 	<projects>
+		<project>functions</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

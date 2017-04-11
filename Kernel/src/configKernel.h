@@ -25,5 +25,6 @@ typedef struct {
 	int STACK_SIZE;
 } t_configKernel;
 
+t_configKernel leerArchConfigKernel(char* unPath);
 
 #endif /* CONFIGKERNEL_H_ */

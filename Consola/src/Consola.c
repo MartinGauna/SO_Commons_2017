@@ -12,12 +12,12 @@
 #include <stdlib.h>
 #include <commons/config.h>
 #include <sys/socket.h>
+#include <functions/socketsClient.h>
 #include "configConsola.h"
-#include "socketsConsola.h"
 
 int main(void) {
 
-	t_regConfig archConfig = leeArchConfigConsola("../archivoConfiguracionConsola.cfg");
+	t_configConsola archConfig = leeArchConfigConsola("../archivoConfiguracionConsola.cfg");
 
 	t_cliente consola = newClient(archConfig.IP_KERNEL, archConfig.PUERTO_KERNELL);
 

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <commons/config.h>
+#include <functions/othersFunctions.h>
 #include "configFileSystem.h"
 
 t_config *Config = NULL;
@@ -25,24 +26,4 @@ t_configFileSystem leerArchConfigFileSystem(char* unPath) {
 	free(punteroConfig);
 
 	return configuracion;
-}
-
-void setChar(char** charSet, char* parametroBuscado) {
-	if(config_has_property(Config, parametroBuscado)) {
-		*charSet = strdup(config_get_string_value(Config, parametroBuscado));
-		printf("%s = %s \n", parametroBuscado, *charSet);
-	}
-	else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
-}
-
-void setInt(int* intSet, char* parametroBuscado) {
-	if(config_has_property(Config, parametroBuscado)) {
-		*intSet = config_get_string_value(Config, parametroBuscado);
-		printf("%s = %s \n", parametroBuscado, *intSet);
-	}
-	else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
 }

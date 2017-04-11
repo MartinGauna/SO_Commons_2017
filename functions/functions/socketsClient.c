@@ -1,17 +1,18 @@
 /*
- * socketsConsola.c
+ * socketsClient.c
  *
- *  Created on: 7/4/2017
+ *  Created on: 11/4/2017
  *      Author: utnso
  */
 #include <sys/socket.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
+#include "socketsClient.h"
 
 t_cliente newClient(char* ip, int puerto){
 
-	t_cliente* newCliente = malloc(sizeof(struct cliente));
+	t_cliente* newCliente = malloc(sizeof(t_cliente));
 	newSocket(&((*newCliente).socketCliente));
 
     if(((*newCliente).destino.sin_addr.s_addr = inet_addr(ip)) == INADDR_NONE) {
@@ -133,12 +134,4 @@ char* handShakeClient(int socketServer, char* message) {
 
 	return msgReturn;
 }
-
-
-
-
-
-
-
-
 

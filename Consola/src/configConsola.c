@@ -8,41 +8,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <commons/config.h>
+#include <functions/othersFunctions.h>
 #include "configConsola.h"
 
 t_config *Config = NULL;
 char* path = NULL;
 
-t_regConfig leeArchConfigConsola(char* unPath) {
+t_configConsola leeArchConfigConsola(char* unPath) {
 
 	path = unPath;
 	Config = config_create(path);
-	t_regConfig* punteroConfig = malloc((sizeof(int) + sizeof(char*)));
-	t_regConfig configuracion = *punteroConfig;
-	setIP(&configuracion.IP_KERNEL,"IP_KERNEL");
-	setPUERTO(&configuracion.PUERTO_KERNELL, "PUERTO_KERNEL");
+	t_configConsola* punteroConfig = malloc((sizeof(int) + sizeof(char*)));
+	t_configConsola configuracion = *punteroConfig;
+	setChar(&configuracion.IP_KERNEL,"IP_KERNEL");
+	setInt(&configuracion.PUERTO_KERNELL, "PUERTO_KERNEL");
 	config_destroy(Config);
 	free(punteroConfig);
 
 	return configuracion;
-}
-
-void setIP(char** ipSet, char* parametroBuscado) {
-	if(config_has_property(Config, parametroBuscado)) {
-		*ipSet = strdup(config_get_string_value(Config, parametroBuscado));
-		printf("%s = %s \n", parametroBuscado, *ipSet);
-	}
-	else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
-}
-
-void setPUERTO(int* puertoSet, char* parametroBuscado) {
-	if(config_has_property(Config, parametroBuscado)) {
-		*puertoSet = config_get_string_value(Config, parametroBuscado);
-		printf("%s = %s \n", parametroBuscado, *puertoSet);
-	}
-	else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
 }
