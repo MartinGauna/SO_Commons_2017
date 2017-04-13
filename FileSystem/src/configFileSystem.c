@@ -10,6 +10,7 @@
 #include <commons/config.h>
 #include <functions/othersFunctions.h>
 #include "configFileSystem.h"
+#include "string.h"
 
 t_config *Config = NULL;
 char* path = NULL;
@@ -20,10 +21,29 @@ t_configFileSystem leerArchConfigFileSystem(char* unPath) {
 	Config = config_create(path);
 	t_configFileSystem* punteroConfig = malloc((sizeof(int) + sizeof(char*)));
 	t_configFileSystem configuracion = *punteroConfig;
-	setChar(&configuracion.PUNTO_MONTAJE,"PUNTO_MONTAJE");
+	setChar(&configuracion.PUNTO_MONTAJE, "PUNTO_MONTAJE");
 	setInt(&configuracion.PUERTO, "PUERTO");
 	config_destroy(Config);
 	free(punteroConfig);
 
 	return configuracion;
 }
+
+void setChar(char** charSet, char* parametroBuscado) {
+	if (config_has_property(Config, parametroBuscado)) {
+		*charSet = strdup(config_get_string_value(Config, parametroBuscado));
+		printf("%s = %s \n", parametroBuscado, *charSet);
+	} else {
+		printf("No se encontro %s \n", parametroBuscado);
+	}
+}
+
+void setInt(int* intSet, char* parametroBuscado) {
+	if (config_has_property(Config, parametroBuscado)) {
+		*intSet = config_get_int_value(Config, parametroBuscado);
+		printf("%s = %d \n", parametroBuscado, *intSet);
+	} else {
+		printf("No se encontro %s \n", parametroBuscado);
+	}
+}
+

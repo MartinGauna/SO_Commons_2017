@@ -24,7 +24,12 @@
 #define PUERTO "5010"
 #define PUERTO_MEMORIA "5100"
 #define IP_MEMORIA "127.0.0.1"
+
+#define PUERTO_FILESYSTEM "5003"
+#define IP_FILESYSTEM "127.0.0.1"
+
 #define PACKAGESIZE 1024
+
 
 int main(){
 
@@ -41,6 +46,7 @@ int main(){
 
 	int listenningSocket;
 	int socketMemoria;
+	int socketFileSystem;
 	struct sockaddr_in addr;
 	socklen_t addrlen = sizeof(addr);
 
@@ -49,6 +55,8 @@ int main(){
 	create_server(&listenningSocket, PUERTO);
 
 	create_client(&socketMemoria , IP_MEMORIA, PUERTO_MEMORIA);
+
+	create_client(&socketFileSystem, IP_FILESYSTEM, PUERTO_FILESYSTEM);
 
 	//Inicializo el select
 			log_info(testlog,"Inicializo el SELECT");
@@ -113,6 +121,7 @@ int main(){
 										printf("Nuevo msj:\n");
 										printf("%s", package);
 										send(socketMemoria, package, strlen(package) + 1, 0);
+										send(socketFileSystem, package, strlen(package) + 1, 0);
 									}
 
 								}
@@ -124,6 +133,8 @@ int main(){
 
 	close(socketMemoria);
 	log_info(testlog, "cierro socketCliente");
+	close(socketFileSystem);
+	log_info(testlog, "cierro socketFileSystem");
 	close(listenningSocket);
 	log_info(testlog, "cierro socketServer");
 
