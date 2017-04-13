@@ -35,7 +35,7 @@ int main(void) {
 	int enviar = 1;
 	char message[PACKAGESIZE];
 
-	printf("Conectado al servidor. Bienvenido al sistema, ya puede enviar mensajes. Escriba 'exit' para salir\n");
+	printf("Conectado al Kernel. Escriba 'exit' para salir\n");
 
 	while(enviar){
 		fgets(message, PACKAGESIZE, stdin);

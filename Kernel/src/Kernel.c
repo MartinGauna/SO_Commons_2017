@@ -22,6 +22,8 @@
 #include "sockets.h"
 
 #define PUERTO "5010"
+#define PUERTO_MEMORIA "5100"
+#define IP_MEMORIA "127.0.0.1"
 #define PACKAGESIZE 1024
 
 int main(){
@@ -38,13 +40,15 @@ int main(){
 	};
 
 	int listenningSocket;
-	int socketCliente;
+	int socketMemoria;
 	struct sockaddr_in addr;
 	socklen_t addrlen = sizeof(addr);
 
 //	create_log(testlog);
 	printf("Se crea el Kernel\n");
 	create_server(&listenningSocket, PUERTO);
+
+	create_client(&socketMemoria , IP_MEMORIA, PUERTO_MEMORIA);
 
 	//Inicializo el select
 			log_info(testlog,"Inicializo el SELECT");
@@ -106,8 +110,9 @@ int main(){
 									// tenemos datos de algÃºn cliente
 									if (nbytes != 0){
 										log_info(testlog,"Imprimo msj: %s", package);
-										printf("Nuevo msj\n");
-										printf("%s\n", package);
+										printf("Nuevo msj:\n");
+										printf("%s", package);
+										send(socketMemoria, package, strlen(package) + 1, 0);
 									}
 
 								}
@@ -117,7 +122,7 @@ int main(){
 				}
 			}
 
-	close(socketCliente);
+	close(socketMemoria);
 	log_info(testlog, "cierro socketCliente");
 	close(listenningSocket);
 	log_info(testlog, "cierro socketServer");
