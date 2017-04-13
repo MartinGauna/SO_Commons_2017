@@ -40,6 +40,8 @@ char* waitResponseServerTam(int socketServer, int* longMsg);
 char* chattingWithProcess(int socketProcess, char* message);
 
 //Hacer un handshake con el servidor
-char* handShakeClient(int socketServer, char* message);
+//char* handShakeClient(int socketServer, char* message);
+char* handShakeClient(int * socket, char * mensaje);
+int inicializarSocketCliente(int *socket);
 
 #endif /* FUNCTIONS_SOCKETSCLIENT_H_ */

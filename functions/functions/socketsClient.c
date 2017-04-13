@@ -111,27 +111,64 @@ char* chattingWithProcess(int socketProcess, char* message) {
 	return waitServerResponse(socketProcess);
 }
 
-char* handShakeClient(int socketServer, char* message) {
+//char* handShakeClient(int socketServer, char* message) {
+//
+//	char* msgReturn = malloc(sizeof(message));
+//	int longMsg = strlen(message);
+//	msgReturn = waitResponseServerTam(socketServer, &longMsg);
+//
+//	if((strcmp(msgReturn, "El server ha cerrado conexion contigo.") ||
+//	    strcmp(msgReturn, "Error al recibir el mensaje.")) == 0) {
+//		perror(msgReturn);
+//		close(socketServer);
+//		return msgReturn;
+//	}
+//
+//	if(sendMessageToServer(socketServer, message) == -1) {
+//		msgReturn = (char*)realloc(msgReturn, strlen("Error al enviar el mensaje."));
+//		strcpy(msgReturn, "Error al enviar el mensaje.");
+//		perror(msgReturn);
+//		close(socketServer);
+//		return msgReturn;
+//	}
+//
+//	return msgReturn;
+//}
 
-	char* msgReturn = malloc(sizeof(message));
-	int longMsg = strlen(message);
-	msgReturn = waitResponseServerTam(socketServer, &longMsg);
+char* handShakeClient(int *socket, char * mensaje)
+{
+	char buffer[30];
+		//Enviar mensaje
+	write(* socket, mensaje, 30);
+	fprintf(stderr, "%s \n",mensaje);
+		//Recibir respuesta
+	read(* socket, buffer, 30);
+	fprintf(stderr, "buffer %s \n",buffer);
 
-	if((strcmp(msgReturn, "El server ha cerrado conexion contigo.") ||
-	    strcmp(msgReturn, "Error al recibir el mensaje.")) == 0) {
-		perror(msgReturn);
-		close(socketServer);
-		return msgReturn;
-	}
-
-	if(sendMessageToServer(socketServer, message) == -1) {
-		msgReturn = (char*)realloc(msgReturn, strlen("Error al enviar el mensaje."));
-		strcpy(msgReturn, "Error al enviar el mensaje.");
-		perror(msgReturn);
-		close(socketServer);
-		return msgReturn;
-	}
-
-	return msgReturn;
+	mensaje = buffer;
+	return mensaje;
 }
+
+int inicializarSocketCliente(int *socket)
+{
+	char buffer[30];
+
+	fprintf(stderr, "iniciando consola_cliente... \n");
+
+	while((write((* socket), "intento de envio", 30)) == -1)
+	{
+		(* socket) = Abrir_cliente("127.0.0.1"); //hardcodeame ésta. Estaria bueno poner un numero de intentos
+		fprintf(stderr, "CONSOLA: Error al intentar conectar con el Kernel, se realizara un "
+				"nuevo intento en 3 segundos. \n");
+		sleep(3);
+	}
+	fprintf(stderr, "iniciado correctamente \n");
+
+	read(* socket, buffer, 30); //no entendi que hace
+	fprintf(stderr, "Leo: %s\n", buffer);
+
+	return 0;
+}
+
+
 
