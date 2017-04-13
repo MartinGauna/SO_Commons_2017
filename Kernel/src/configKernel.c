@@ -30,12 +30,32 @@ t_configKernel leerArchConfigKernel(char* unPath) {
 	setInt(&configuracion.QUANTUM_SLEEP, "QUANTUM_SLEEP");
 	setChar(&configuracion.ALGORITMO, "ALGORITMO");
 	setInt(&configuracion.GRADO_MULTIPROG, "GRADO_MULTIPROG");
-	setChar(&configuracion.SEM_IDS, "SEM_IDS");
-	setInt(&configuracion.SEM_INIT, "SEM_INIT");
-	setChar(&configuracion.SHARED_VARS, "SHARED_VARS");
+	//setChar(&configuracion.SEM_IDS, "SEM_IDS");
+	//setInt(&configuracion.SEM_INIT, "SEM_INIT");
+	//setChar(&configuracion.SHARED_VARS, "SHARED_VARS");
 	setInt(&configuracion.STACK_SIZE, "STACK_SIZE");
 	config_destroy(Config);
 	free(punteroConfig);
 
 	return configuracion;
+}
+
+void setInt(int* intSet, char* parametroBuscado) {
+	if(config_has_property(Config, parametroBuscado)) {
+		*intSet = config_get_string_value(Config, parametroBuscado);
+		printf("%s = %s \n", parametroBuscado, *intSet);
+	}
+	else {
+		printf("No se encontro %s \n", parametroBuscado);
+	}
+}
+
+void setChar(char** charSet, char* parametroBuscado) {
+	if(config_has_property(Config, parametroBuscado)) {
+		*charSet = strdup(config_get_string_value(Config, parametroBuscado));
+		printf("%s = %s \n", parametroBuscado, *charSet);
+	}
+	else {
+		printf("No se encontro %s \n", parametroBuscado);
+	}
 }

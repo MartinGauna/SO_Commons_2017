@@ -9,28 +9,41 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-#include <commons/config.h>
+#include <sys/types.h>
 #include <sys/socket.h>
-#include <functions/socketsClient.h>
-#include "configConsola.h"
+#include <netdb.h>
+#include <unistd.h>
+#include <errno.h>
+#include <commons/log.h>
+#include <features.h>
+#include <netinet/in.h>
+#include "sockets.h"
+
+#define IP "127.0.0.1"
+#define PUERTO "5010"
+#define PACKAGESIZE 1024
 
 int main(void) {
 
-	t_configConsola archConfig = leeArchConfigConsola("../archivoConfiguracionConsola.cfg");
 
-	t_cliente consola = newClient(archConfig.IP_KERNEL, archConfig.PUERTO_KERNELL);
+	int serverSocket;
 
-	while((connectServer(consola)) == -1) {
-		printf("CONSOLA: Error al intentar conectar con el Kernel, se realizara un "
-				"nuevo intento en 3 segundos.");
-		sleep(3);
+	create_client(&serverSocket , IP, PUERTO);
+
+	int enviar = 1;
+	char message[PACKAGESIZE];
+
+	printf("Conectado al servidor. Bienvenido al sistema, ya puede enviar mensajes. Escriba 'exit' para salir\n");
+
+	while(enviar){
+		fgets(message, PACKAGESIZE, stdin);
+		if (!strcmp(message,"exit\n")) enviar = 0;
+		if (enviar) send(serverSocket, message, strlen(message) + 1, 0);
 	}
 
-	handShakeClient(consola.socketCliente, "Hola soy una consola y me quiero conectar a ti.");
-
-	sendMessageToServer(consola.socketCliente, "Estoy funcionando!");
-	//falta definir el tamaño del mensaje
+	close(serverSocket);
 
 	return 0;
 }
