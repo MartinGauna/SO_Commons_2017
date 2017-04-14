@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <commons/config.h>
-#include <functions/othersFunctions.h>
 #include "configKernel.h"
 
 t_config *Config = NULL;

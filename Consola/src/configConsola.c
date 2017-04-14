@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <commons/config.h>
-#include <functions/othersFunctions.h>
 #include "configConsola.h"
 
 t_config *Config = NULL;
@@ -41,7 +40,7 @@ void setChar(char** charSet, char* parametroBuscado) {
 void setInt(int* intSet, char* parametroBuscado) {
 	if(config_has_property(Config, parametroBuscado)) {
 		*intSet = config_get_string_value(Config, parametroBuscado);
-		printf("%s = %s \n", parametroBuscado, *intSet);
+		printf("%s = %d \n", parametroBuscado, *intSet);
 	}
 	else {
 		printf("No se encontro %s \n", parametroBuscado);

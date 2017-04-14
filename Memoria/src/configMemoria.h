@@ -18,4 +18,10 @@ typedef struct {
 	int RETARDO_MEMORIA;
 } t_configMemoria;
 
+t_configMemoria leeArchConfigMemoria(char* unPath);
+
+void setChar(char** charSet, char* parametroBuscado);
+
+void setInt(int* intSet, char* parametroBuscado);
+
 #endif /* CONFIGMEMORIA_H_ */

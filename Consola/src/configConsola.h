@@ -15,5 +15,7 @@ typedef struct {
 
 //Lee el archivo de configuracion que se pasa por parametro de la consola y crea el struct correspondiente
 t_configConsola leeArchConfigConsola(char* path);
+void setInt(int* intSet, char* parametroBuscado);
+void setChar(char** charSet, char* parametroBuscado);
 
 #endif /* CONFIGCONSOLA_H_ */

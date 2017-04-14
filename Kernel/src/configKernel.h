@@ -26,5 +26,7 @@ typedef struct {
 } t_configKernel;
 
 t_configKernel leerArchConfigKernel(char* unPath);
+void setChar(char** charSet, char* parametroBuscado);
+void setInt(int* intSet, char* parametroBuscado);
 
 #endif /* CONFIGKERNEL_H_ */
