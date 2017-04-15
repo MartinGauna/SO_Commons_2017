@@ -20,6 +20,7 @@
 #include <features.h>
 #include <netinet/in.h>
 #include "sockets.h"
+#include "configKernel.h"
 
 #define PUERTO "5010"
 #define PUERTO_MEMORIA "5100"
@@ -52,6 +53,10 @@ int main(){
 
 //	create_log(testlog);
 	printf("Se crea el Kernel\n");
+
+	t_configKernel* kernel = leerConfigKernel(kernel);
+	printf("Anda? puerto cpu es 5001? Devuelve : %d \n \n", kernel->PUERTO_CPU);
+
 	create_server(&listenningSocket, PUERTO);
 
 	create_client(&socketMemoria , IP_MEMORIA, PUERTO_MEMORIA);

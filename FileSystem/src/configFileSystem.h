@@ -6,12 +6,8 @@
  */
 
 typedef struct {
-	int PUERTO;
+	int PUERTO2; //tuve que ponerle puerto2 porque ya habia una variable llamada puerto en el main
 	char* PUNTO_MONTAJE;
 } t_configFileSystem;
 
-t_configFileSystem leerArchConfigFileSystem(char* path);
-
-void setChar(char** charSet, char* parametroBuscado);
-
-void setInt(int* intSet, char* parametroBuscado);
+t_configFileSystem* leerConfigFS();

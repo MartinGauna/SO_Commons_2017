@@ -19,6 +19,7 @@
 #include <features.h>
 #include <netinet/in.h>
 #include "sockets.h"
+#include "configFileSystem.h"
 
 #define PUERTO "5003"
 #define BACKLOG 5
@@ -36,6 +37,9 @@ int main(){
 	accept_connection(listenningSocket, &serverSocket);
 
 	printf("Servidor creado\n");
+
+    t_configFileSystem* fileSystem = leerConfigFS(fileSystem);
+    printf("Anda? Entonces debe devolver 5003. Retorna : %d \n \n", fileSystem->PUERTO2);
 
 	char package[PACKAGESIZE];
 	int status = 1;

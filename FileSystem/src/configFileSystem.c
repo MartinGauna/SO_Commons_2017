@@ -11,38 +11,31 @@
 #include "configFileSystem.h"
 #include "string.h"
 
-t_config *Config = NULL;
-char* path = NULL;
 
-t_configFileSystem leerArchConfigFileSystem(char* unPath) {
+t_configFileSystem* leerConfigFS() {
 
-	path = unPath;
-	Config = config_create(path);
-	t_configFileSystem* punteroConfig = malloc((sizeof(int) + sizeof(char*)));
-	t_configFileSystem configuracion = *punteroConfig;
-	setChar(&configuracion.PUNTO_MONTAJE, "PUNTO_MONTAJE");
-	setInt(&configuracion.PUERTO, "PUERTO");
-	config_destroy(Config);
-	free(punteroConfig);
+	t_config* archivo = config_create("/home/utnso/workspace/Probanding/FileSystem/src/archivoConfiguracionFileSystem.cfg");
+    t_configFileSystem* datosFS = malloc((sizeof(int) + sizeof(char*)));
 
-	return configuracion;
-}
+	if(archivo == NULL) {
+    	perror("Archivo no encontrado \n");
+    }
+    else {
+    	printf("Datos de archivo de configuracion del File System: \n");
 
-void setChar(char** charSet, char* parametroBuscado) {
-	if (config_has_property(Config, parametroBuscado)) {
-		*charSet = strdup(config_get_string_value(Config, parametroBuscado));
-		printf("%s = %s \n", parametroBuscado, *charSet);
-	} else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
-}
+    	datosFS->PUERTO2 = config_get_int_value(archivo, "PUERTO");
+    	printf("PUERTO = %d \n", datosFS->PUERTO2);
 
-void setInt(int* intSet, char* parametroBuscado) {
-	if (config_has_property(Config, parametroBuscado)) {
-		*intSet = config_get_int_value(Config, parametroBuscado);
-		printf("%s = %d \n", parametroBuscado, *intSet);
-	} else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
+
+		char* punto = string_new();
+		string_append(&punto, config_get_string_value(archivo, "PUNTO_MONTAJE"));
+		datosFS->PUNTO_MONTAJE = punto;
+		printf("PUNTO_MONTAJE = %s \n \n", datosFS->PUNTO_MONTAJE);
+		free(punto);
+
+		config_destroy(archivo);
+    }
+
+	return datosFS;
 }
 

@@ -10,45 +10,44 @@
 #include <commons/config.h>
 #include "configMemoria.h"
 
-t_config *Config = NULL;
-char* path = NULL;
+t_configMemoria* leerConfigMemoria() {
 
-t_configMemoria leeArchConfigMemoria(char* unPath) {
+	t_config* archivo = config_create("/home/utnso/workspace/Probanding/Memoria/src/archivoConfiguracionMemoria.cfg");
+    t_configMemoria* datosMemoria = malloc((sizeof(int) + sizeof(char*)));
 
-	path = unPath;
-	Config = config_create(path);
-	t_configMemoria* punteroConfig = malloc((sizeof(int)*6 + sizeof(char*)));
-	t_configMemoria configuracion = *punteroConfig;
-	setInt(&configuracion.PUERTO, "PUERTO");
-	setInt(&configuracion.MARCOS, "MARCOS");
-	setInt(&configuracion.MARCO_SIZE, "MARCOS_SIZE");
-	setInt(&configuracion.ENTRADAS_CACHE, "ENTRADAS_CACHE");
-	setInt(&configuracion.CACHE_X_PROC, "CACHE_X_PROC");
-	setChar(&configuracion.REEMPLAZO_CACHE,"REEMPLAZO_CACHE");
-	setInt(&configuracion.RETARDO_MEMORIA, "RETARDO_MEMORIA");
-	config_destroy(Config);
-	free(punteroConfig);
+	if(archivo == NULL) {
+    	perror("Archivo no encontrado \n");
+    }
+    else {
+    	printf("Datos de archivo de configuracion de la Memoria: \n");
 
-	return configuracion;
-}
+    	datosMemoria->PUERTO2 = config_get_int_value(archivo, "PUERTO");
+    	printf("PUERTO = %d \n", datosMemoria->PUERTO2);
 
-void setChar(char** charSet, char* parametroBuscado) {
-	if(config_has_property(Config, parametroBuscado)) {
-		*charSet = strdup(config_get_string_value(Config, parametroBuscado));
-		printf("%s = %s \n", parametroBuscado, *charSet);
-	}
-	else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
-}
+    	datosMemoria->MARCOS = config_get_int_value(archivo, "MARCOS");
+    	printf("MARCOS = %d \n", datosMemoria->MARCOS);
 
-void setInt(int* intSet, char* parametroBuscado) {
-	if(config_has_property(Config, parametroBuscado)) {
-		*intSet = config_get_string_value(Config, parametroBuscado);
-		printf("%s = %d \n", parametroBuscado, *intSet);
-	}
-	else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
+    	datosMemoria->MARCO_SIZE = config_get_int_value(archivo, "MARCO_SIZE");
+    	printf("MARCO_SIZE = %d \n", datosMemoria->MARCO_SIZE);
+
+    	datosMemoria->ENTRADAS_CACHE = config_get_int_value(archivo, "ENTRADAS_CACHE");
+    	printf("ENTRADAS_CACHE = %d \n", datosMemoria->ENTRADAS_CACHE);
+
+    	datosMemoria->CACHE_X_PROC = config_get_int_value(archivo, "CACHE_X_PROC");
+    	printf("CACHE_X_PROC = %d \n", datosMemoria->CACHE_X_PROC);
+
+		char* reecach = string_new();
+		string_append(&reecach, config_get_string_value(archivo, "REEMPLAZO_CACHE"));
+		datosMemoria->REEMPLAZO_CACHE = reecach;
+		printf("IP Kernel = %s \n", datosMemoria->REEMPLAZO_CACHE);
+		free(reecach);
+
+		datosMemoria->RETARDO_MEMORIA = config_get_int_value(archivo, "RETARDO_MEMORIA");
+		printf("RETARDO_MEMORIA = %d \n \n", datosMemoria->RETARDO_MEMORIA);
+
+		config_destroy(archivo);
+    }
+
+	return datosMemoria;
 }
 

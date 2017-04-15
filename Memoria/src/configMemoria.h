@@ -9,7 +9,7 @@
 #define CONFIGMEMORIA_H_
 
 typedef struct {
-	int PUERTO;
+	int PUERTO2; //lo mismo que fs otra variable llamada puerto hace ruido, por eso puerto2
 	int MARCOS;
 	int MARCO_SIZE;
 	int ENTRADAS_CACHE;
@@ -18,10 +18,6 @@ typedef struct {
 	int RETARDO_MEMORIA;
 } t_configMemoria;
 
-t_configMemoria leeArchConfigMemoria(char* unPath);
-
-void setChar(char** charSet, char* parametroBuscado);
-
-void setInt(int* intSet, char* parametroBuscado);
+t_configMemoria* leeConfigMemoria();
 
 #endif /* CONFIGMEMORIA_H_ */

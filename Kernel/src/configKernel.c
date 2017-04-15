@@ -8,53 +8,86 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <commons/config.h>
+#include <commons/string.h>
+#include <string.h>
 #include "configKernel.h"
 
-t_config *Config = NULL;
-char* path = NULL;
+t_configKernel* leerConfigKernel() {
 
-t_configKernel leerArchConfigKernel(char* unPath) {
+	t_config* archivo = config_create("/home/utnso/workspace/Probanding/Kernel/src/archivoConfiguracionKernel.cfg");
+    t_configKernel* datosKernel = malloc((sizeof(int) + sizeof(char*)));
 
-	path = unPath;
-	Config = config_create(path);
-	t_configKernel* punteroConfig = malloc((sizeof(int) + sizeof(char*)));
-	t_configKernel configuracion = *punteroConfig;
-	setInt(&configuracion.PUERTO_PROG, "PUERTO_PROG");
-	setInt(&configuracion.PUERTO_CPU, "PUERTO_CPU");
-	setChar(&configuracion.IP_MEMORIA, "IP_MEMORIA");
-	setInt(&configuracion.PUERTO_MEMORIA, "PUERTO_MEMORIA");
-	setChar(&configuracion.IP_FS, "IP_FS");
-	setInt(&configuracion.PUERTO_FS, "PUETO_FS");
-	setInt(&configuracion.QUANTUM, "QUANTUM");
-	setInt(&configuracion.QUANTUM_SLEEP, "QUANTUM_SLEEP");
-	setChar(&configuracion.ALGORITMO, "ALGORITMO");
-	setInt(&configuracion.GRADO_MULTIPROG, "GRADO_MULTIPROG");
-	//setChar(&configuracion.SEM_IDS, "SEM_IDS");
-	//setInt(&configuracion.SEM_INIT, "SEM_INIT");
-	//setChar(&configuracion.SHARED_VARS, "SHARED_VARS");
-	setInt(&configuracion.STACK_SIZE, "STACK_SIZE");
-	config_destroy(Config);
-	free(punteroConfig);
+	if(archivo == NULL) {
+    	perror("Archivo no encontrado \n");
+    }
+    else {
+        printf("Datos de archivo de configuracion del Kernel: \n");
 
-	return configuracion;
-}
+    	datosKernel->PUERTO_PROG = config_get_int_value(archivo, "PUERTO_PROG");
+    	printf("PUERTO_PROG = %d \n", datosKernel->PUERTO_PROG);
 
-void setInt(int* intSet, char* parametroBuscado) {
-	if(config_has_property(Config, parametroBuscado)) {
-		*intSet = config_get_string_value(Config, parametroBuscado);
-		printf("%s = %s \n", parametroBuscado, *intSet);
-	}
-	else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
-}
+    	datosKernel->PUERTO_CPU = config_get_int_value(archivo, "PUERTO_CPU");
+    	printf("PUERTO_CPU = %d \n", datosKernel->PUERTO_CPU);
 
-void setChar(char** charSet, char* parametroBuscado) {
-	if(config_has_property(Config, parametroBuscado)) {
-		*charSet = strdup(config_get_string_value(Config, parametroBuscado));
-		printf("%s = %s \n", parametroBuscado, *charSet);
-	}
-	else {
-		printf("No se encontro %s \n", parametroBuscado);
-	}
+    	char* ipMem = string_new();
+		string_append(&ipMem, config_get_string_value(archivo, "IP_MEMORIA"));
+		datosKernel->IP_MEMORIA = ipMem;
+		printf("IP_MEMORIA = %s \n", datosKernel->IP_MEMORIA);
+		free(ipMem);
+
+		datosKernel->PUERTO_MEMORIA = config_get_int_value(archivo, "PUERTO_MEMORIA");
+		printf("PUERTO_MEMORIA = %d \n", datosKernel->PUERTO_MEMORIA);
+
+		char* ipFs = string_new();
+		string_append(&ipFs, config_get_string_value(archivo, "IP_FS"));
+		datosKernel->IP_FS = ipFs;
+		printf("IP_FS = %s \n", datosKernel->IP_FS);
+		free(ipFs);
+
+		datosKernel->PUERTO_FS = config_get_int_value(archivo, "PUERTO_FS");
+		printf("PUERTO_FS = %d \n", datosKernel->PUERTO_FS);
+
+		datosKernel->QUANTUM = config_get_int_value(archivo, "QUANTUM");
+		printf("QUANTUM = %d \n", datosKernel->QUANTUM);
+
+		datosKernel->QUANTUM_SLEEP = config_get_int_value(archivo, "QUANTUM_SLEEP");
+	    printf("QUANTUM_SLEEP = %d \n", datosKernel->QUANTUM_SLEEP);
+
+	    char* algoritmo = string_new();
+	    string_append(&algoritmo, config_get_string_value(archivo, "ALGORITMO"));
+	    datosKernel->ALGORITMO = algoritmo;
+	    printf("ALGORITMO = %s \n", datosKernel->ALGORITMO);
+	    free(algoritmo);
+
+		datosKernel->GRADO_MULTIPROG = config_get_int_value(archivo, "GRADO_MULTIPROG");
+	    printf("GRADO_MULTIPROG = %d \n", datosKernel->GRADO_MULTIPROG);
+
+	    //setChar(&configuracion.SEM_IDS, "SEM_IDS");
+
+	   /* char** array;
+	    array = config_get_array_value(archivo, "SEM_IDS"); <-rompe aca
+	    datosKernel->SEM_IDS = array;
+	    printf("SEM_IDS = ");
+	    int k = 0;
+	    int flag = 1;
+	    do {
+	    	if(array[k] != NULL) {
+	    		printf("%s ", array[k]);
+	    		printf(" ,");
+	    	}
+	    	else {
+	    		flag = 0;
+	    		printf(" \n");
+	    	}
+	    } while (flag);*/
+	    //setInt(&configuracion.SEM_INIT, "SEM_INIT");
+	    //setChar(&configuracion.SHARED_VARS, "SHARED_VARS");
+
+		datosKernel->STACK_SIZE = config_get_int_value(archivo, "STACK_SIZE");
+	    printf("STACK_SIZE = %d \n \n", datosKernel->STACK_SIZE);
+
+		config_destroy(archivo);
+    }
+
+	return datosKernel;
 }

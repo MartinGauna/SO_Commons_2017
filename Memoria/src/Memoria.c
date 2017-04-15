@@ -20,6 +20,7 @@
 #include <features.h>
 #include <netinet/in.h>
 #include "sockets.h"
+#include "configMemoria.h"
 
 #define PUERTO "5100"
 #define BACKLOG 5
@@ -35,6 +36,9 @@ int main(){
 	accept_connection(listenningSocket, &serverSocket);
 
 	printf("Servidor creado\n");
+
+    t_configMemoria* memoria = leerConfigMemoria(memoria);
+    printf("Anda? Entonces debe devolver 5003. Retorna : %d \n \n", memoria->PUERTO2);
 
 	char package[PACKAGESIZE];
 	int status = 1;

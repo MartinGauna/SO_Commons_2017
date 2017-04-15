@@ -20,6 +20,7 @@
 #include <features.h>
 #include <netinet/in.h>
 #include "sockets.h"
+#include "configConsola.h"
 
 #define IP "127.0.0.1"
 #define PUERTO "5010"
@@ -27,6 +28,8 @@
 
 int main(void) {
 
+    t_configConsola* consola = leerConfig(consola);
+    printf("Anda? Entonces debe devolver 5010. Retorna : %d \n \n", consola->PUERTO_KERNEL);
 
 	int serverSocket;
 

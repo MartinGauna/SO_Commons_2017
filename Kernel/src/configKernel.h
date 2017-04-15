@@ -25,7 +25,7 @@ typedef struct {
 	int STACK_SIZE;
 } t_configKernel;
 
-t_configKernel leerArchConfigKernel(char* unPath);
+t_configKernel* leerConfigKernel();
 void setChar(char** charSet, char* parametroBuscado);
 void setInt(int* intSet, char* parametroBuscado);
 
