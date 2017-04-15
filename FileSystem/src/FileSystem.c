@@ -40,6 +40,7 @@ int main(){
 	char package[PACKAGESIZE];
 	int status = 1;
 
+	handShakeServidor(serverSocket,"filesystem","kernel");
 	printf("Kernel conectado. Esperando mensajes:\n");
 
 	while (status != 0){

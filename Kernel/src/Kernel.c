@@ -55,8 +55,9 @@ int main(){
 	create_server(&listenningSocket, PUERTO);
 
 	create_client(&socketMemoria , IP_MEMORIA, PUERTO_MEMORIA);
-
+	handShakeCliente(socketMemoria,"memoria","kernel");
 	create_client(&socketFileSystem, IP_FILESYSTEM, PUERTO_FILESYSTEM);
+	handShakeCliente(socketFileSystem,"filesystem","kernel");
 
 	//Inicializo el select
 			log_info(testlog,"Inicializo el SELECT");
