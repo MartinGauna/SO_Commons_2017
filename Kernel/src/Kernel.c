@@ -22,11 +22,11 @@
 #include "sockets.h"
 #include "configKernel.h"
 
-#define PUERTO "5010"
+#define PUERTO "5012"
 #define PUERTO_MEMORIA "5100"
 #define IP_MEMORIA "127.0.0.1"
 
-#define PUERTO_FILESYSTEM "5003"
+#define PUERTO_FILESYSTEM "5004"
 #define IP_FILESYSTEM "127.0.0.1"
 
 #define PACKAGESIZE 1024
@@ -50,7 +50,8 @@ int main(){
 	int socketFileSystem;
 	struct sockaddr_in addr;
 	socklen_t addrlen = sizeof(addr);
-
+	char handServer[10];
+	char handCliente[10];
 //	create_log(testlog);
 	printf("Se crea el Kernel\n");
 
@@ -60,9 +61,12 @@ int main(){
 	create_server(&listenningSocket, PUERTO);
 
 	create_client(&socketMemoria , IP_MEMORIA, PUERTO_MEMORIA);
-	handShakeCliente(socketMemoria,"memoria","kernel");
+	handShakeCliente(socketMemoria,handServer,"kernel");
+	printf("Me comunique con %s \n",handServer);
+
 	create_client(&socketFileSystem, IP_FILESYSTEM, PUERTO_FILESYSTEM);
-	handShakeCliente(socketFileSystem,"filesystem","kernel");
+	handShakeCliente(socketFileSystem,handServer,"kernel");
+	printf("Me comunique con %s \n",handServer);
 
 	//Inicializo el select
 			log_info(testlog,"Inicializo el SELECT");
@@ -110,6 +114,10 @@ int main(){
 
 								}
 							} else {
+
+								//handShakeServidor(i,"kernel",handCliente);
+								//printf("%s conectado. Esperando mensajes:\n",handCliente);
+
 								//Si es un socket existente
 								if ((nbytes = recv(i, &package, PACKAGESIZE, 0)) <= 0) {
 									//Si la conexion se cerro

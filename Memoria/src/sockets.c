@@ -56,27 +56,18 @@ void create_client(int* serverSocket, char* ip, char* port){
 	freeaddrinfo(serverInfo);
 }
 
-void handShakeServidor(int serverSocket,const char * servidor,const char * cliente){
-
-	char verificadorCliente[10];
-
-	recv(serverSocket,verificadorCliente, sizeof(char)*10, 0);
-	printf("me llego %d %s \n",serverSocket, verificadorCliente);
-	if(strcmp(verificadorCliente ,cliente)==0)
-	{
-		send(serverSocket, (void*)servidor, sizeof(char)*10, 0);
+void handShakeServidor(int serverSocket,const char * servidor,char * cliente){
+	recv(serverSocket,cliente, sizeof(char)*11, 0);
+		printf("me llego  %s \n", cliente);
+	send(serverSocket, (void*)servidor, sizeof(char)*11, 0);
 		printf("enviado %s \n",servidor);
-	}
 }
 
 
 
-void handShakeCliente(int clienteSocket,const char * servidor,const char * cliente){
-
-	char verificadorServidor[10];
-
-	send(clienteSocket, (void *)cliente, sizeof(char)*10, 0);//mesnaje a kernel
+void handShakeCliente(int clienteSocket, char * servidor,const char * cliente){
+	send(clienteSocket, (void *)cliente, sizeof(char)*11, 0);//mesnaje a kernel
 		printf("envio %s %d\n",cliente,clienteSocket);
-	recv(clienteSocket,verificadorServidor ,sizeof(char)*10, 0);
-		printf("recibo  %s \n",verificadorServidor);
+	recv(clienteSocket,servidor ,sizeof(char)*11, 0);
+		printf("recibo  %s \n",servidor);
 }

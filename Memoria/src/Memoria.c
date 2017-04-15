@@ -42,9 +42,11 @@ int main(){
 
 	char package[PACKAGESIZE];
 	int status = 1;
+	char handCliente[10];
 
-	handShakeServidor(serverSocket,"memoria","kernel");
-	printf("Kernel conectado. Esperando mensajes:\n");
+	handShakeServidor(serverSocket,"memoria",handCliente);
+
+	printf("%s conectado. Esperando mensajes:\n",handCliente);
 
 	while (status != 0){
 		status = recv(serverSocket, (void*) package, PACKAGESIZE, 0);

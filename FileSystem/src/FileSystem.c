@@ -21,7 +21,7 @@
 #include "sockets.h"
 #include "configFileSystem.h"
 
-#define PUERTO "5003"
+#define PUERTO "5004"
 #define BACKLOG 5
 #define PACKAGESIZE 1024
 
@@ -43,9 +43,11 @@ int main(){
 
 	char package[PACKAGESIZE];
 	int status = 1;
+	char handCliente[10];
 
-	handShakeServidor(serverSocket,"filesystem","kernel");
-	printf("Kernel conectado. Esperando mensajes:\n");
+	handShakeServidor(serverSocket,"fileSys",handCliente);
+	printf("%s conectado. Esperando mensajes:\n",handCliente);
+
 
 	while (status != 0){
 		status = recv(serverSocket, (void*) package, PACKAGESIZE, 0);
