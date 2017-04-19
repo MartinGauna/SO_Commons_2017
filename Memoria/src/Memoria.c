@@ -17,12 +17,12 @@
 #include <unistd.h>
 #include <errno.h>
 #include <commons/log.h>
+#include <commons/string.h>
 #include <features.h>
 #include <netinet/in.h>
 #include "sockets.h"
 #include "configMemoria.h"
 
-#define PUERTO "5100"
 #define BACKLOG 5
 #define PACKAGESIZE 1024
 
@@ -31,14 +31,15 @@ int main(){
 	int listenningSocket;
 	int serverSocket;
 
+    t_configMemoria* memoria = leerConfigMemoria(memoria);
+    char* PUERTO = string_itoa(memoria->PUERTO);
+    printf("Anda? Entonces debe devolver 5002. Retorna : %d \n", memoria->PUERTO);
+
 	create_server(&listenningSocket, PUERTO);
 
 	accept_connection(listenningSocket, &serverSocket);
 
 	printf("Servidor creado\n");
-
-    t_configMemoria* memoria = leerConfigMemoria(memoria);
-    printf("Anda? Entonces debe devolver 5003. Retorna : %d \n \n", memoria->PUERTO2);
 
 	char package[PACKAGESIZE];
 	int status = 1;

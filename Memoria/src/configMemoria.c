@@ -21,8 +21,8 @@ t_configMemoria* leerConfigMemoria() {
     else {
     	printf("Datos de archivo de configuracion de la Memoria: \n");
 
-    	datosMemoria->PUERTO2 = config_get_int_value(archivo, "PUERTO");
-    	printf("PUERTO = %d \n", datosMemoria->PUERTO2);
+    	datosMemoria->PUERTO = config_get_int_value(archivo, "PUERTO");
+    	printf("PUERTO = %d \n", datosMemoria->PUERTO);
 
     	datosMemoria->MARCOS = config_get_int_value(archivo, "MARCOS");
     	printf("MARCOS = %d \n", datosMemoria->MARCOS);
@@ -40,7 +40,6 @@ t_configMemoria* leerConfigMemoria() {
 		string_append(&reecach, config_get_string_value(archivo, "REEMPLAZO_CACHE"));
 		datosMemoria->REEMPLAZO_CACHE = reecach;
 		printf("IP Kernel = %s \n", datosMemoria->REEMPLAZO_CACHE);
-		free(reecach);
 
 		datosMemoria->RETARDO_MEMORIA = config_get_int_value(archivo, "RETARDO_MEMORIA");
 		printf("RETARDO_MEMORIA = %d \n \n", datosMemoria->RETARDO_MEMORIA);

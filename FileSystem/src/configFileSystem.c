@@ -23,15 +23,14 @@ t_configFileSystem* leerConfigFS() {
     else {
     	printf("Datos de archivo de configuracion del File System: \n");
 
-    	datosFS->PUERTO2 = config_get_int_value(archivo, "PUERTO");
-    	printf("PUERTO = %d \n", datosFS->PUERTO2);
+    	datosFS->PUERTO = config_get_int_value(archivo, "PUERTO");
+    	printf("PUERTO = %d \n", datosFS->PUERTO);
 
 
 		char* punto = string_new();
 		string_append(&punto, config_get_string_value(archivo, "PUNTO_MONTAJE"));
 		datosFS->PUNTO_MONTAJE = punto;
 		printf("PUNTO_MONTAJE = %s \n \n", datosFS->PUNTO_MONTAJE);
-		free(punto);
 
 		config_destroy(archivo);
     }

@@ -9,7 +9,7 @@
 #define CONFIGMEMORIA_H_
 
 typedef struct {
-	int PUERTO2; //lo mismo que fs otra variable llamada puerto hace ruido, por eso puerto2
+	int PUERTO;
 	int MARCOS;
 	int MARCO_SIZE;
 	int ENTRADAS_CACHE;

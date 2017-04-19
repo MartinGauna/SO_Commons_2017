@@ -33,7 +33,6 @@ t_configKernel* leerConfigKernel() {
 		string_append(&ipMem, config_get_string_value(archivo, "IP_MEMORIA"));
 		datosKernel->IP_MEMORIA = ipMem;
 		printf("IP_MEMORIA = %s \n", datosKernel->IP_MEMORIA);
-		free(ipMem);
 
 		datosKernel->PUERTO_MEMORIA = config_get_int_value(archivo, "PUERTO_MEMORIA");
 		printf("PUERTO_MEMORIA = %d \n", datosKernel->PUERTO_MEMORIA);
@@ -42,7 +41,6 @@ t_configKernel* leerConfigKernel() {
 		string_append(&ipFs, config_get_string_value(archivo, "IP_FS"));
 		datosKernel->IP_FS = ipFs;
 		printf("IP_FS = %s \n", datosKernel->IP_FS);
-		free(ipFs);
 
 		datosKernel->PUERTO_FS = config_get_int_value(archivo, "PUERTO_FS");
 		printf("PUERTO_FS = %d \n", datosKernel->PUERTO_FS);
@@ -57,7 +55,6 @@ t_configKernel* leerConfigKernel() {
 	    string_append(&algoritmo, config_get_string_value(archivo, "ALGORITMO"));
 	    datosKernel->ALGORITMO = algoritmo;
 	    printf("ALGORITMO = %s \n", datosKernel->ALGORITMO);
-	    free(algoritmo);
 
 		datosKernel->GRADO_MULTIPROG = config_get_int_value(archivo, "GRADO_MULTIPROG");
 	    printf("GRADO_MULTIPROG = %d \n", datosKernel->GRADO_MULTIPROG);

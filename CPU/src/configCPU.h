@@ -1,21 +1,21 @@
 /*
- * configConsola.h
+ * configCPU.h
  *
- *  Created on: 6/4/2017
+ *  Created on: 19/4/2017
  *      Author: utnso
  */
 
-#ifndef CONFIGCONSOLA_H_
-#define CONFIGCONSOLA_H_
+#ifndef CONFIGCPU_H_
+#define CONFIGCPU_H_
 
 #include <commons/config.h>
 
 typedef struct {
 	char* IP_KERNEL;
 	int PUERTO_KERNEL;
-} t_configConsola;
+} t_configCPU;
 
 //Lee el archivo de configuracion que se pasa por parametro de la consola y crea el struct correspondiente
-t_configConsola* leerConfigConsola();
+t_configCPU* leerConfigCPU();
 
-#endif /* CONFIGCONSOLA_H_ */
+#endif /* CONFIGCPU_H_ */

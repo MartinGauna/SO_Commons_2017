@@ -17,17 +17,13 @@
 #include <unistd.h>
 #include <errno.h>
 #include <commons/log.h>
+#include <commons/string.h>
 #include <features.h>
 #include <netinet/in.h>
 #include "sockets.h"
 #include "configKernel.h"
 
-#define PUERTO "5012"
-#define PUERTO_MEMORIA "5100"
-#define IP_MEMORIA "127.0.0.1"
-
-#define PUERTO_FILESYSTEM "5004"
-#define IP_FILESYSTEM "127.0.0.1"
+#define PUERTO "5010"
 
 #define PACKAGESIZE 1024
 
@@ -56,7 +52,11 @@ int main(){
 	printf("Se crea el Kernel\n");
 
 	t_configKernel* kernel = leerConfigKernel(kernel);
-	printf("Anda? puerto cpu es 5001? Devuelve : %d \n \n", kernel->PUERTO_CPU);
+	char *IP_MEMORIA = kernel->IP_MEMORIA;
+	char* PUERTO_MEMORIA = string_itoa(kernel->PUERTO_MEMORIA);
+	char* PUERTO_FILESYSTEM = string_itoa(kernel->PUERTO_FS);
+	char *IP_FILESYSTEM = kernel->IP_FS;
+	printf("Anda? puerto cpu es 5001? Devuelve : %d \n", kernel->PUERTO_CPU);
 
 	create_server(&listenningSocket, PUERTO);
 
@@ -129,7 +129,7 @@ int main(){
 									close(i);
 									FD_CLR(i, &master); // eliminar del conjunto maestro
 								} else {
-									// tenemos datos de algÃºn cliente
+									// tenemos datos de algun cliente
 									if (nbytes != 0){
 										log_info(testlog,"Imprimo msj: %s", package);
 										printf("Nuevo msj:\n");

@@ -16,12 +16,12 @@
 #include <unistd.h>
 #include <errno.h>
 #include <commons/log.h>
+#include <commons/string.h>
 #include <features.h>
 #include <netinet/in.h>
 #include "sockets.h"
 #include "configFileSystem.h"
 
-#define PUERTO "5004"
 #define BACKLOG 5
 #define PACKAGESIZE 1024
 
@@ -32,14 +32,15 @@ int main(){
 	int listenningSocket;
 	int serverSocket;
 
+    t_configFileSystem* fileSystem = leerConfigFS(fileSystem);
+    char* PUERTO = string_itoa(fileSystem->PUERTO);
+    printf("Anda? Entonces debe devolver 5003. Retorna : %d \n", fileSystem->PUERTO);
+
 	create_server(&listenningSocket, PUERTO);
 
 	accept_connection(listenningSocket, &serverSocket);
 
 	printf("Servidor creado\n");
-
-    t_configFileSystem* fileSystem = leerConfigFS(fileSystem);
-    printf("Anda? Entonces debe devolver 5003. Retorna : %d \n \n", fileSystem->PUERTO2);
 
 	char package[PACKAGESIZE];
 	int status = 1;

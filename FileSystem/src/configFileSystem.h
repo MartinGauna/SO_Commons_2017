@@ -6,7 +6,7 @@
  */
 
 typedef struct {
-	int PUERTO2; //tuve que ponerle puerto2 porque ya habia una variable llamada puerto en el main
+	int PUERTO; //tuve que ponerle puerto2 porque ya habia una variable llamada puerto en el main
 	char* PUNTO_MONTAJE;
 } t_configFileSystem;
 

@@ -10,28 +10,7 @@
 #include <commons/config.h>
 #include "configConsola.h"
 
-//void setChar(char** charSet, char* parametroBuscado) {
-//	if(config_has_property(Config, parametroBuscado)) {
-//		*charSet = strdup(config_get_string_value(Config, parametroBuscado));
-//		printf("%s = %s \n", parametroBuscado, *charSet);
-//	}
-//	else {
-//		printf("No se encontro %s \n", parametroBuscado);
-//	}
-//}
-//
-//void setInt(int* intSet, char* parametroBuscado) {
-//	if(config_has_property(Config, parametroBuscado)) {
-//		*intSet = config_get_string_value(Config, parametroBuscado);
-//		printf("%s = %d \n", parametroBuscado, *intSet);
-//	}
-//	else {
-//		printf("No se encontro %s \n", parametroBuscado);
-//	}
-//}
-
-
-t_configConsola* leerConfig() {
+t_configConsola* leerConfigConsola() {
 
 	t_config* archivo = config_create("/home/utnso/workspace/Probanding/Consola/src/archivoConfiguracionConsola.cfg");
     t_configConsola* datosConsola = malloc((sizeof(int) + sizeof(char*)));
@@ -50,7 +29,6 @@ t_configConsola* leerConfig() {
 		string_append(&ip, config_get_string_value(archivo, "IP_KERNEL"));
 		datosConsola->IP_KERNEL = ip;
 		printf("IP Kernel = %s \n \n", datosConsola->IP_KERNEL);
-		free(ip);
 
 		config_destroy(archivo);
     }
