@@ -112,7 +112,6 @@ int leerPuerto (void* configFile, char* parametro, t_log* logger){
 char* leerIP (void* configFile, char* parametro, t_log* logger){
 	char* ip = "";
 	ip = leerString (configFile, parametro,logger);
-	validar_ip(ip,logger);
 	return ip;
 }
 
@@ -123,32 +122,3 @@ void validar_puerto(int puerto, t_log* logger){
 	}
 	return;
 }
-
-void validar_ip(char* ip, t_log* logger) {
-	regex_t regex;
-	int regres;
-	char msgbuf[100];
-
-	regres = regcomp(&regex, "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
-					REG_EXTENDED);		//REVISAR LA EXPRESION REGULAR
-	if (regres) {
-		log_error(logger,"Error al generar la regex para validar IP.");
-		exit(1);
-	}
-
-	regres = regexec(&regex, ip, 0, NULL, 0);
-
-	if (regres == REG_NOMATCH) {
-		log_error(logger,"IP invalida.");
-		exit(EXIT_FAILURE);
-	} else {
-//		log_info(logger, "IP del Kernel valida.");
-	    regerror(regres, &regex, msgbuf, sizeof(msgbuf));
-//	    fprintf(stderr, "Regex match failed: %s\n", msgbuf);
-	}
-}
-
-
-
-
-
