@@ -81,7 +81,7 @@ int main (int argc, char *argv[]) {
 	    	if(strcmp(message, ENVIAR_MENSAJE) ==0) {
 	    		printf("Escriba el mensaje:  ");
 	    		fgets(message, 50, stdin);
-	    		if(enviar(socketKernel,HOLA,message,strlen(message)+1,logger)) {
+	    		if(enviar(socketKernel,17,message,strlen(message)+1,logger)) { //el 17 significa una consola q solo envia mensajes
 	    			printf("No se pudo enviar correctamente el stream \n");
 	    			close(socketKernel);
 	    		    return EXIT_FAILURE;
