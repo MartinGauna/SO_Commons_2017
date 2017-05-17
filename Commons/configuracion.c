@@ -75,6 +75,8 @@ void* cargarConfiguracion(char* path,int configParamAmount,processType configTyp
 			return NULL;
 	}
 
+	config_destroy(configFile);
+
 }
 
 char* leerString (void* configFile, char* parametro, t_log* logger){
