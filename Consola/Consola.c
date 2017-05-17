@@ -27,7 +27,6 @@
 #define HELP "help\n"
 
 t_log *logger;
-t_log* testlog;
 
 int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_consola", "CONSOLA", 1, LOG_LEVEL_TRACE);
