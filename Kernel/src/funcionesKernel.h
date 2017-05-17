@@ -1,9 +1,10 @@
 #ifndef FUNCIONESKERNEL_H
 
-#include "../Commons/configuracion.h"
-#include "../Commons/socket.h"
+#include "configuracion.h"
+#include "socket.h"
 #include <commons/log.h>
 #include <commons/config.h>
+#include <pthread.h>
 
 #define TRUE  1;
 #define FALSE  0;

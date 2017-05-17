@@ -13,8 +13,6 @@
 #include <features.h>
 #include <netinet/in.h>
 #include <signal.h>
-#include "../Commons/socket.h"
-#include "../Commons/configuracion.h"
 #include "funcionesConsola.h"
 
 #define PACKAGESIZE 1024
@@ -26,11 +24,9 @@
 #define ENVIAR_MENSAJE "enviar mensajes\n"
 #define HELP "help\n"
 
-t_log *logger;
-
 int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_consola", "CONSOLA", 1, LOG_LEVEL_TRACE);
-	configConsole* conf = (configConsole*) cargarConfiguracion("./config", 2, CONSOLA, logger);
+	configConsole* conf = (configConsole*) cargarConfiguracion("../config.cfg", 2, CONSOLA, logger);
 	int socketKernel;
 
 	char message[PACKAGESIZE];
@@ -46,9 +42,11 @@ int main (int argc, char *argv[]) {
 		//ERROR
 	}
 	//Hago el handshake con el Kernel.
-	if(enviarHandshake(socketKernel, CONSOLA_HSK, KERNEL_HSK,logger)){
+	/*if(enviarHandshake(socketKernel, CONSOLA_HSK, KERNEL_HSK,logger)){
 		//ERROR
-	}
+	}*/
+
+	printf("Llegue hasta aca \n");
 
 	while(flag){
 
@@ -81,8 +79,8 @@ int main (int argc, char *argv[]) {
 	    	if(strcmp(message, ENVIAR_MENSAJE) ==0) {
 	    		printf("Escriba el mensaje:  ");
 	    		fgets(message, 50, stdin);
-	    		if(enviar(socketKernel,17,message,strlen(message)+1,logger)) { //el 17 significa una consola q solo envia mensajes
-	    			printf("No se pudo enviar correctamente el stream \n");
+	    		if(enviar(socketKernel, 17,message,strlen(message)+1,logger)) { //el 17 significa una consola q solo envia mensajes
+	    			printf("No se pudo enviar correctamente el stream \n"); // no deberia preguntar si enviar == -1 ??
 	    			close(socketKernel);
 	    		    return EXIT_FAILURE;
 	    		}

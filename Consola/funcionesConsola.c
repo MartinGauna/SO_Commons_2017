@@ -5,8 +5,9 @@
  *      Author: utnso
  */
 
-#include "../Commons1/configuracion.h"
-#include "../Commons1/socket.h"
+#include "configuracion.h"
+#include "socket.h"
+#include "funcionesConsola.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -16,7 +17,6 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <errno.h>
-#include <pthread.h>
 #include <commons/log.h>
 #include <commons/string.h>
 #include <commons/txt.h>
@@ -24,6 +24,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
+#include <pthread.h>
 
 t_archivoThread arch;
 int* tamanio;
@@ -55,6 +56,7 @@ void* iniciarProgramaPorThread(void* _parameters) {
 	int ch;
 	char* buffer;
 	int size;
+	t_log* logger;
 
 	FILE *archivoAnsisop;
 
@@ -87,14 +89,9 @@ void* iniciarProgramaPorThread(void* _parameters) {
 	int tamanioBuffer = strlen(buffer)+1;
 	int consola = CONSOLA;
 
-	if(enviarStream(parameters->serverSocket,consola,sizeof(int),&tamanioBuffer) == -1) {
+	if(enviar(parameters->serverSocket, consola, buffer, tamanioBuffer, logger)){
 		printf("No se pudo enviar correctamente el stream \n");
-		exit(0);
-	}
-
-	if(send(parameters->serverSocket,buffer,tamanioBuffer,0) == -1) {
-		printf("No se pudo enviar correctamente el mensaje \n");
-		exit(0);
+		return EXIT_FAILURE;
 	}
 
 	printf("Envio completado \n");

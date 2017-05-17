@@ -8,16 +8,20 @@
 #ifndef FUNCIONESCONSOLA_H_
 #define FUNCIONESCONSOLA_H_
 
-#include "../Commons/configuracion.h"
-#include "../Commons/socket.h"
+#include "configuracion.h"
+#include "socket.h"
 #include <commons/log.h>
 #include <commons/config.h>
 #include <stdio.h>
+#include <pthread.h>
 
 typedef struct {
 	int serverSocket;
 	char* path;
 } t_archivoThread;
+
+t_log *logger;
+t_log* testlog;
 
 void consola_imprimir_encabezado();
 void consola_imprimir_menu();
