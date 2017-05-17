@@ -13,6 +13,8 @@
 #include <features.h>
 #include <netinet/in.h>
 #include <signal.h>
+#include "../Commons/socket.h"
+#include "../Commons/configuracion.h"
 #include "funcionesConsola.h"
 
 #define PACKAGESIZE 1024
@@ -34,7 +36,7 @@ int main (int argc, char *argv[]) {
 
 	char message[PACKAGESIZE];
 	char path[PATH];
-	int enviar = 1;
+	int flag = 1;
 
 	consola_imprimir_encabezado();
 	printf("IP_KERNEL: %s\n",conf->ip);
@@ -49,13 +51,13 @@ int main (int argc, char *argv[]) {
 		//ERROR
 	}
 
-	while(enviar){
+	while(flag){
 
 	    	fgets(message, PACKAGESIZE, stdin);
 
 	    	if(strcmp(message, DESCONECTAR_CONSOLA) == 0) {
 	    		printf("Consola desconectandose... \n");
-	    		enviar = 0;
+	    		flag = 0;
 	    		close(socketKernel);
 	    		exit(EXIT_FAILURE);
 	    	}
