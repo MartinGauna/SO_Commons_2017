@@ -11,6 +11,13 @@ int nbytes;
 t_package pack;
 int recorrerfd;
 
+void handShakeServidor(int serverSocket,const char * servidor,char * cliente){
+	recv(serverSocket,cliente, sizeof(char)*11, 0);
+		printf("me llego  %s \n", cliente);
+	send(serverSocket, (void*)servidor, sizeof(char)*11, 0);
+		printf("enviado %s \n",servidor);
+}
+
 void liberar_memoria(t_log* logger, configKernel* config) {
 	free(logger);
 	free(config);
@@ -49,7 +56,7 @@ void* atenderCliente(void* _parameters){
 	int i = estructura->socketCliente;
 	fd_set master = estructura->master;
 	//int sFS = estructura->socketFS;
-	//int sM = estructura->socketM;
+	int sM = estructura->socketM;
 	//FDSocket fdSocket[100];
     //fdSocket = estructura->fdSocket;
 	int fdmax = estructura->fdmax;
@@ -91,13 +98,13 @@ void* atenderCliente(void* _parameters){
 			}
 
 			//Envia a Memoria
-			/*if(enviar(sM, pack.code, pack.data, pack.size, testlog)) {
+			if(enviar(sM, pack.code, pack.data, pack.size, testlog)) {
 				printf("No se pudo enviar correctamente el stream \n");
 				return EXIT_FAILURE;
 			}
 
 			//Envia a File System
-			if(enviar(sFS, pack.code, pack.data, pack.size, testlog)) {
+			/*if(enviar(sFS, pack.code, pack.data, pack.size, testlog)) {
 				printf("No se pudo enviar correctamente el stream \n");
 				return EXIT_FAILURE;
 			}*/

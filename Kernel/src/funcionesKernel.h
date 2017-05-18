@@ -24,6 +24,7 @@ typedef struct{
 	//FDSocket fdSocket[100];
 	int fdmax;
 }structParaCliente;
+void handShakeServidor(int serverSocket,const char * servidor,char * cliente);
 
 void liberar_memoria(t_log* logger, configKernel* config);
 void closeConections(int socketCPU, int socketFS, int socketMemoria, int socketConsola);

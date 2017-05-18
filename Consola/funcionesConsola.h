@@ -23,6 +23,7 @@ typedef struct {
 t_log *logger;
 t_log* testlog;
 
+void handShakeCliente(int clienteSocket, char * servidor,const char * cliente);
 void consola_imprimir_encabezado();
 void consola_imprimir_menu();
 void liberar_memoria(t_log* logger,configConsole* config);

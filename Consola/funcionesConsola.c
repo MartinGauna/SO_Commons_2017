@@ -29,6 +29,13 @@
 t_archivoThread arch;
 int* tamanio;
 
+void handShakeCliente(int clienteSocket, char * servidor,const char * cliente){
+	send(clienteSocket, (void *)cliente, sizeof(char)*11, 0);//mesnaje a kernel
+		printf("envio %s %d\n",cliente,clienteSocket);
+	recv(clienteSocket,servidor ,sizeof(char)*11, 0);
+		printf("recibo  %s \n",servidor);
+}
+
 void liberar_memoria(t_log* logger,configConsole* config) {
 	free(logger);
 	free(config);

@@ -28,6 +28,7 @@ int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_consola", "CONSOLA", 1, LOG_LEVEL_TRACE);
 	configConsole* conf = (configConsole*) cargarConfiguracion("../config.cfg", 2, CONSOLA, logger);
 	int socketKernel;
+	char handServer[10];
 
 	char message[PACKAGESIZE];
 	char path[PATH];
@@ -41,7 +42,9 @@ int main (int argc, char *argv[]) {
 	if(cargarSoket(conf->puerto, conf->ip, &socketKernel, logger)){
 		//ERROR
 	}
+
 	//Hago el handshake con el Kernel.
+	handShakeCliente(socketKernel,handServer,"consola");
 	/*if(enviarHandshake(socketKernel, CONSOLA_HSK, KERNEL_HSK,logger)){
 		//ERROR
 	}*/
@@ -79,7 +82,7 @@ int main (int argc, char *argv[]) {
 	    	if(strcmp(message, ENVIAR_MENSAJE) ==0) {
 	    		printf("Escriba el mensaje:  ");
 	    		fgets(message, 50, stdin);
-	    		if(enviar(socketKernel, 17,message,strlen(message)+1,logger)) { //el 17 significa una consola q solo envia mensajes
+	    		if(enviar(socketKernel, 17, message, sizeof(50),logger)) { //el 17 significa una consola q solo envia mensajes
 	    			printf("No se pudo enviar correctamente el stream \n"); // no deberia preguntar si enviar == -1 ??
 	    			close(socketKernel);
 	    		    return EXIT_FAILURE;
