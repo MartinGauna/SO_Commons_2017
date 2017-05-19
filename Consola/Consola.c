@@ -5,7 +5,7 @@
 
 int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_consola", "CONSOLA", 1, LOG_LEVEL_TRACE);
-	configConsole* conf = (configConsole*) cargarConfiguracion("./config.cfg", 2, CONSOLA, logger);
+	configConsole* conf = (configConsole*) cargarConfiguracion("./config", 2, CONSOLA, logger);
 	int socketKernel;
 	char handServer[10];
 
