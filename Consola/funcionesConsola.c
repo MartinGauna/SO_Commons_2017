@@ -45,15 +45,6 @@ void* iniciarProgramaPorThread(void* _parameters) {
 	int ch;
 	char* buffer;
 	int size;
-	t_log* logger;
-
-//	FILE *archivoAnsisop;//
-//	parameters->path[strlen(parameters->path)-1] = '\0';//
-//	archivoAnsisop = fopen(parameters->path,"r");//../ansisop/archivoPrueba.txt////
-//	if (archivoAnsisop == NULL) {
-//		perror("Error al tratar de leer archivo");
-//		exit(EXIT_FAILURE);
-//	}
 
 	t_archivoThread* parameters = _parameters;
 
@@ -73,9 +64,11 @@ void* iniciarProgramaPorThread(void* _parameters) {
 	buffer = strcat(buffer,"\0");
 	int tamanioBuffer = strlen(buffer)+1;
 
-	if(enviar(parameters->serverSocket, CONSOLA, buffer, tamanioBuffer, logger)){
-		printf("No se pudo enviar correctamente el stream \n");
-	}
+//	puts(buffer);
+
+//	if(enviar(parameters->serverSocket, INICIAR_PROG, buffer, tamanioBuffer, logger)){
+//		printf("No se pudo enviar correctamente el stream \n");
+//	}
 
 	printf("Envio completado \n");
 
@@ -91,8 +84,6 @@ void iniciarPrograma(FILE* archivo, int serverSocket) {
 
 	arch.serverSocket = serverSocket;
 	arch.file = archivo;
-//	printf("El server es: %d  con el path %s\n", arch.serverSocket,arch.file);
-	//esto es solo para ver que la info se pasa bien, despues se borra
 
 	pthread_create(&hilo, NULL, iniciarProgramaPorThread, &arch);
 

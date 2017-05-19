@@ -35,5 +35,9 @@
 #define ENVIAR_MENSAJE "enviar\n"
 #define HELP "help\n"
 
+extern t_log* logger;
+extern pthread_mutex_t lock;
+
+
 
 #endif /* CONSOLA_H_ */
