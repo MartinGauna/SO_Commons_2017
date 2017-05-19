@@ -33,11 +33,11 @@ void consola_imprimir_encabezado(){
 void consola_imprimir_menu(){
 	printf("Por favor seleccione la opcion correspondiente:\n");
 	printf("\n");
-	printf("1) iniciar programa\n");
-	printf("2) finalizar programa\n");
-	printf("3) desconectar consola\n");
-	printf("4) limpiar mensajes\n");
-	printf("5) enviar mensajes\n");
+	printf("1) Iniciar programa (INICIAR) \n");
+	printf("2) Finalizar programa (FIN) \n");
+	printf("3) Desconectar consola (DESCONECTAR) \n");
+	printf("4) Limpiar mensajes (LIMPIAR) \n");
+	printf("5) Enviar mensajes (ENVIAR) \n");
 }
 
 void* iniciarProgramaPorThread(void* _parameters) {
@@ -47,40 +47,34 @@ void* iniciarProgramaPorThread(void* _parameters) {
 	int size;
 	t_log* logger;
 
-	FILE *archivoAnsisop;
+//	FILE *archivoAnsisop;//
+//	parameters->path[strlen(parameters->path)-1] = '\0';//
+//	archivoAnsisop = fopen(parameters->path,"r");//../ansisop/archivoPrueba.txt////
+//	if (archivoAnsisop == NULL) {
+//		perror("Error al tratar de leer archivo");
+//		exit(EXIT_FAILURE);
+//	}
 
-	t_archivoThread* parameters = (t_archivoThread*) _parameters;
+	t_archivoThread* parameters = _parameters;
 
-	parameters->path[strlen(parameters->path)-1] = '\0';
-
-	archivoAnsisop = fopen(parameters->path,"r");//../ansisop/archivoPrueba.txt
-
-
-	if (archivoAnsisop == NULL) {
-		perror("Error al tratar de leer archivo");
-		exit(EXIT_FAILURE);
-	}
-
-	fseek (archivoAnsisop , 0 , SEEK_END);
-	size = ftell (archivoAnsisop);
-	rewind (archivoAnsisop);
+	fseek (parameters->file , 0 , SEEK_END);
+	size = ftell (parameters->file);
+	rewind (parameters->file);
 
 	buffer = malloc(size);
 
-	ch = fgetc(archivoAnsisop);
+	ch = fgetc(parameters->file);
 	while ((ch) != EOF) {
 		//Le paso la direccion de ch porque strcat recibe dos punteros char
 		strcat(buffer, (char*) &ch);
-		ch = fgetc(archivoAnsisop);
+		ch = fgetc(parameters->file);
 	}
 
 	buffer = strcat(buffer,"\0");
 	int tamanioBuffer = strlen(buffer)+1;
-	int consola = CONSOLA;
 
-	if(enviar(parameters->serverSocket, consola, buffer, tamanioBuffer, logger)){
+	if(enviar(parameters->serverSocket, CONSOLA, buffer, tamanioBuffer, logger)){
 		printf("No se pudo enviar correctamente el stream \n");
-		return EXIT_FAILURE;
 	}
 
 	printf("Envio completado \n");
@@ -91,15 +85,15 @@ void* iniciarProgramaPorThread(void* _parameters) {
 	return NULL;
 }
 
-void iniciarPrograma(char* path, int serverSocket) {
+void iniciarPrograma(FILE* archivo, int serverSocket) {
 
-	pthread_t arch_id;
+	pthread_t hilo;
 
 	arch.serverSocket = serverSocket;
-	arch.path = path;
-	printf("El server es: %d  con el path %s\n", arch.serverSocket,arch.path);
+	arch.file = archivo;
+//	printf("El server es: %d  con el path %s\n", arch.serverSocket,arch.file);
 	//esto es solo para ver que la info se pasa bien, despues se borra
 
-	pthread_create(&arch_id, NULL, iniciarProgramaPorThread, &arch);
+	pthread_create(&hilo, NULL, iniciarProgramaPorThread, &arch);
 
 }

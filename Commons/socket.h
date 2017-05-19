@@ -29,13 +29,44 @@
 
 #define BACKLOG 40;
 
-enum codigoID {CONSOLA_HSK = 1894, CPU_HSK, KERNEL_HSK, MEMORIA_HSK, FILESYSTEM_HSK, HOLA};
 
 typedef struct {
 	uint16_t code;
 	uint32_t size;
 	char*	data;
 }t_package;
+
+enum codigoID {	CONSOLA_HSK = 2000,
+				CPU_HSK,
+				KERNEL_HSK,
+				MEMORIA_HSK,
+				FILESYSTEM_HSK,
+				//CONSOLA
+				INICIAR_PROG,
+				FINALIZAR_PROG,
+				//KERNEL
+				ACEPTAR_PROG,
+				RECHAZAR_PROG,
+				SOLICITAR_MEM,
+				SOLICITAR_PAGINA,
+				LIBERAR_MEM,
+				ABRIR_ARCHIVO,
+				LEER_ARCHIVO,
+				ESCRIBIR_ARCHIVO,
+				CERRAR_ARCHIVO,
+				//CPU
+				CPU_MEM_DEFVAR, // CPU manda a Memoria un msj para definir variable
+				//MEMORIA
+				TAM_PAG,
+				MEMORIA_PROG,
+				MEM_CPU_POS, // Memoria manda a CPU una posición de memoria
+				//FILE SYSTEM
+				HOLA
+}; // La estructura del nombre sería EMISOR_RECEPTOR_DESCRIPCIONDELMENSAJE
+
+
+
+
 
 int escuchar(int puerto, int* socket, t_log* logger);
 int aceptar(int socket,int* newSocket, t_log* logger);

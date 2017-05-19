@@ -30,7 +30,7 @@
 
 typedef struct {
 	int serverSocket;
-	char* path;
+	FILE* file;
 } t_archivoThread;
 
 t_log *logger;
@@ -40,7 +40,7 @@ void handShakeCliente(int clienteSocket, char * servidor,const char * cliente);
 void consola_imprimir_encabezado();
 void consola_imprimir_menu();
 void liberar_memoria(t_log* logger,configConsole* config);
-void iniciarPrograma(char* path, int serverSocket);
+void iniciarPrograma(FILE* archivo, int serverSocket);
 void* iniciarProgramaPorThread(void* _parameters);
 
 #endif /* FUNCIONESCONSOLA_H_ */

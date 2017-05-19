@@ -28,12 +28,12 @@
 
 #define PACKAGESIZE 1024
 #define PATH 300
-#define INICIAR_PROGRAMA "iniciar programa\n"
-#define FINALIZAR_PROGRAMA "finalizar programa\n"
-#define DESCONECTAR_CONSOLA "desconectar consola\n"
-#define LIMPIAR_MENSAJE "limpiar mensajes\n"
-#define ENVIAR_MENSAJE "enviar mensajes\n"
-#define HELP "help\n"
+#define INICIAR_PROGRAMA "INICIAR\n"
+#define FINALIZAR_PROGRAMA "FIN\n"
+#define DESCONECTAR_CONSOLA "DESCONECTAR\n"
+#define LIMPIAR_MENSAJE "LIMPIAR\n"
+#define ENVIAR_MENSAJE "ENVIAR\n"
+#define HELP "HELP\n"
 
 
 #endif /* CONSOLA_H_ */

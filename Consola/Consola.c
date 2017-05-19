@@ -1,9 +1,11 @@
 
 #include "consola.h"
 
+#include <ctype.h>
+
 int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_consola", "CONSOLA", 1, LOG_LEVEL_TRACE);
-	configConsole* conf = (configConsole*) cargarConfiguracion("config", 2, CONSOLA, logger);
+	configConsole* conf = (configConsole*) cargarConfiguracion("./config.cfg", 2, CONSOLA, logger);
 	int socketKernel;
 	char handServer[10];
 
@@ -11,20 +13,24 @@ int main (int argc, char *argv[]) {
 	char path[PATH];
 	int flag = 1;
 
-	consola_imprimir_encabezado();
+	printf("Configuracion:\n");
 	printf("IP_KERNEL: %s\n",conf->ip);
 	printf("PUERTO KERNEL: %d\n",conf->puerto);
+	printf("\n");
+	printf("\n");
+	printf("\n");
 
-	//Me conecto Al Kernel
-	if(cargarSoket(conf->puerto, conf->ip, &socketKernel, logger)){
-		//ERROR
-	}
-
-	//Hago el handshake con el Kernel.
-	handShakeCliente(socketKernel,handServer,"consola");
-	/*if(enviarHandshake(socketKernel, CONSOLA_HSK, KERNEL_HSK,logger)){
-		//ERROR
-	}*/
+	consola_imprimir_encabezado();
+//	//Me conecto Al Kernel
+//	if(cargarSoket(conf->puerto, conf->ip, &socketKernel, logger)){
+//		//ERROR
+//	}
+//
+//	//Hago el handshake con el Kernel.
+//	handShakeCliente(socketKernel,handServer,"consola");
+//	/*if(enviarHandshake(socketKernel, CONSOLA_HSK, KERNEL_HSK,logger)){
+//		//ERROR
+//	}*/
 
 	printf("Llegue hasta aca \n");
 
@@ -44,7 +50,15 @@ int main (int argc, char *argv[]) {
 	    		printf("Indique el path del programa que desea iniciar:  ");
 	    		fgets(path, PATH, stdin);
 
-	    		iniciarPrograma(path, socketKernel);
+	    		FILE* archivo;
+
+	    		if ((archivo = fopen(path,"r")) == 0){
+	    			iniciarPrograma(archivo, socketKernel);
+	    		}
+
+//	    		printf ("El archivo ingresado es incorrecto.");
+
+
 	    	}
 
 	    	if(strcmp(message, FINALIZAR_PROGRAMA) == 0) {
