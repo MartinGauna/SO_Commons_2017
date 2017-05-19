@@ -1,32 +1,9 @@
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <errno.h>
-#include <pthread.h>
-#include <commons/log.h>
-#include <commons/string.h>
-#include <features.h>
-#include <netinet/in.h>
-#include <signal.h>
-#include "funcionesConsola.h"
-
-#define PACKAGESIZE 1024
-#define PATH 300
-#define INICIAR_PROGRAMA "iniciar programa\n"
-#define FINALIZAR_PROGRAMA "finalizar programa\n"
-#define DESCONECTAR_CONSOLA "desconectar consola\n"
-#define LIMPIAR_MENSAJE "limpiar mensajes\n"
-#define ENVIAR_MENSAJE "enviar mensajes\n"
-#define HELP "help\n"
+#include "consola.h"
 
 int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_consola", "CONSOLA", 1, LOG_LEVEL_TRACE);
-	configConsole* conf = (configConsole*) cargarConfiguracion("../config.cfg", 2, CONSOLA, logger);
+	configConsole* conf = (configConsole*) cargarConfiguracion("config", 2, CONSOLA, logger);
 	int socketKernel;
 	char handServer[10];
 

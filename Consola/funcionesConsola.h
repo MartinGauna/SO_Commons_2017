@@ -8,11 +8,24 @@
 #ifndef FUNCIONESCONSOLA_H_
 #define FUNCIONESCONSOLA_H_
 
-#include "configuracion.h"
-#include "socket.h"
-#include <commons/log.h>
-#include <commons/config.h>
 #include <stdio.h>
+#include "../Commons/configuracion.h"
+#include "../Commons/socket.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <errno.h>
+#include <commons/log.h>
+#include <commons/string.h>
+#include <commons/txt.h>
+#include <features.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <signal.h>
 #include <pthread.h>
 
 typedef struct {

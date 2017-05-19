@@ -5,26 +5,8 @@
  *      Author: utnso
  */
 
-#include "configuracion.h"
-#include "socket.h"
 #include "funcionesConsola.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/wait.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <errno.h>
-#include <commons/log.h>
-#include <commons/string.h>
-#include <commons/txt.h>
-#include <features.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <signal.h>
-#include <pthread.h>
+
 
 t_archivoThread arch;
 int* tamanio;
