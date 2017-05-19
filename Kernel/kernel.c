@@ -6,7 +6,8 @@ structParaCliente cliente;
 int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_kernel", "KERNEL", 1, LOG_LEVEL_TRACE);
 	configKernel* conf = (configKernel*)cargarConfiguracion("./config", 14, KERNEL, logger);
-	int socketMemoria,socketFS,socketListen,newSocket,socketCPU=0,socketConsola=0;
+//	int socketMemoria,socketFS,newSocket,socketCPU=0,socketConsola=0;
+	int socketListen;
 	int conectados, fd;
 	uint16_t codigoHandshake;
 	t_package pkg;
@@ -52,16 +53,17 @@ int main (int argc, char *argv[]) {
 
 	FD_ZERO(&readset);
 	FD_ZERO(&read_fds);
-	FD_SET(socketListen, &readset);
-	FD_SET(socketMemoria, &readset);
-	FD_SET(socketFS, &readset);
-	fdmax = socketListen;
+//	FD_SET(socketMemoria, &readset);
+//	FD_SET(socketFS, &readset);
 
 	//Me pongo a escuchar conecciones de consolas y CPUs
 	if(escuchar(conf->puerto_prog, &socketListen, logger)){
 		//ERROR
 		return EXIT_FAILURE;
 	}
+
+	fdmax = socketListen;
+	FD_SET(socketListen, &readset);
 
 	//Me mantengo en el bucle para asi poder procesar cambios en los sockets
 	while(1) {
@@ -98,43 +100,43 @@ int main (int argc, char *argv[]) {
 						//Recibe consolas y cpus
 						if(fdSocket[i].activo == 0){
 
-							//for(conectados=0;conectados<2;conectados++)
-							if(recibirHandshake(newSocket, KERNEL_HSK, &codigoHandshake, logger)){
-								//ERROR
-								return EXIT_FAILURE;
-							}
-							if(!socketConsola && codigoHandshake == CONSOLA_HSK){
-								socketConsola = newSocket;
-								FD_SET(socketConsola, &readset);
-							}else if(!socketCPU && codigoHandshake == CPU_HSK){
-								socketCPU = newSocket;
-								FD_SET(socketCPU, &readset);
-							}else{
-								close(newSocket); //No se reconoce el codigo del Handshake.
-							}
-
-//******* Aca hay un tema importante para resolver, si tenemos socketCPU y con el for me restringe a que haya solo una CPU conectada y no varias
-//******* Pero usar el vector es de negros, asi que hay que arreglar esto, mas que nada para despues armar bien la estructura que se le pasa al thread
-//******* Y poder solucionar el tema de el envio d msj a todas las CPU que esta comentado dentro del thread
-
-							fdSocket[i].activo = TRUE;
-							fdSocket[i].fd = i;
-							strcpy(fdSocket[i].nombre,codigoHandshake);
-							printf("%s conectado. Esperando mensajes: \n", codigoHandshake);
-
-						}else{
-						//Si es un socket existente
-
-							cliente.socketCliente = i;
-							cliente.master = readset;
-							cliente.socketFS = socketFS;
-							cliente.socketM = socketMemoria;
-							//cliente.fdSocket[100]= fdSocket[100];
-							cliente.fdmax = fdmax;
-
-							pthread_create(&thread_cliente, NULL, (void*)atenderCliente, &cliente);
-
-							}
+//							//for(conectados=0;conectados<2;conectados++)
+//							if(recibirHandshake(newSocket, KERNEL_HSK, &codigoHandshake, logger)){
+//								//ERROR
+//								return EXIT_FAILURE;
+//							}
+//							if(!socketConsola && codigoHandshake == CONSOLA_HSK){
+//								socketConsola = newSocket;
+//								FD_SET(socketConsola, &readset);
+//							}else if(!socketCPU && codigoHandshake == CPU_HSK){
+//								socketCPU = newSocket;
+//								FD_SET(socketCPU, &readset);
+//							}else{
+//								close(newSocket); //No se reconoce el codigo del Handshake.
+//							}
+//
+////******* Aca hay un tema importante para resolver, si tenemos socketCPU y con el for me restringe a que haya solo una CPU conectada y no varias
+////******* Pero usar el vector es de negros, asi que hay que arreglar esto, mas que nada para despues armar bien la estructura que se le pasa al thread
+////******* Y poder solucionar el tema de el envio d msj a todas las CPU que esta comentado dentro del thread
+//
+//							fdSocket[i].activo = TRUE;
+//							fdSocket[i].fd = i;
+//							strcpy(fdSocket[i].nombre,codigoHandshake);
+//							printf("%s conectado. Esperando mensajes: \n", codigoHandshake);
+//
+//						}else{
+//						//Si es un socket existente
+//
+//							cliente.socketCliente = i;
+//							cliente.master = readset;
+//							cliente.socketFS = socketFS;
+//							cliente.socketM = socketMemoria;
+//							//cliente.fdSocket[100]= fdSocket[100];
+//							cliente.fdmax = fdmax;
+//
+//							pthread_create(&thread_cliente, NULL, (void*)atenderCliente, &cliente);
+//
+//							}
 
 						}
 					}
@@ -144,5 +146,8 @@ int main (int argc, char *argv[]) {
 
 	printf("Ingrese una tecla para finalizar.\n");
 	getchar();
-	return EXIT_SUCCESS;
+//	return EXIT_SUCCESS;
+
+	}
 }
+
