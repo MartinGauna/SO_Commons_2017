@@ -7,6 +7,12 @@
 
 #include "socket.h"
 
+/**
+ * @NAME: escuchar
+ * @DESC: crea un socket y se encarga de hacer un liste sobre el mismo.
+ * @PARAMS: {int} 	puerto Numero de puerto
+ * 			{int *}	socket Puntero en el que se almacenara el socket, necesita tener la memoria asignada.
+ */
 int escuchar(int puerto, int* socket, t_log* logger){
 	int listenBacklog = BACKLOG;
 	if(cargarSoket(puerto, "",  socket, logger)){
@@ -21,6 +27,12 @@ int escuchar(int puerto, int* socket, t_log* logger){
 	return EXIT_SUCCESS;
 }
 
+/**
+ * @NAME: escuchar
+ * @DESC: Acepta una conexion sobre un socket que esta haciendo un listen. por lo que hay que llamar a escuchar antes que a esta funcion.
+ * @PARAMS: {int} 	socket Socket que esta escuchando
+ * 			{int *}	newSocket Nuevo sokcet generado al hacer el accept.
+ */
 int aceptar(int socket,int* newSocket, t_log* logger){
 	struct sockaddr_storage their_addr;
 	socklen_t addrSize;
@@ -34,7 +46,14 @@ int aceptar(int socket,int* newSocket, t_log* logger){
 	return EXIT_SUCCESS;
 }
 
-/*Funcion que crea el socket para escucha o para conectarse*/
+/**
+ * @NAME: cargarSoket
+ * @DESC: Crea un socket que se puede usar tanto para listen, si no se le pasa la ip, como para connect,
+ * 		  si le paso la ip a la que me quiero conectar. La memoria de la variables puntero debe estar previamente asignada.
+ * @PARAMS: {int} 	iPuerto puesto que se le asigna al socket.
+ * 			{int*}	ip ip a la que me quiero conectar, o si es null el socket se puede usar para hacer listen.
+ * 			{int*}	pSocket Socket creado dentro de la funcion.
+ */
 int cargarSoket(int iPuerto,const char* ip, int* pSocket, t_log* logger){
 	int socketFD;
 	struct addrinfo hints, *servInfo, *p;
@@ -90,6 +109,14 @@ int cargarSoket(int iPuerto,const char* ip, int* pSocket, t_log* logger){
 	return EXIT_SUCCESS;
 }
 
+/**
+ * @NAME: enviarHandshake
+ * @DESC: Envia un codigo de handshake,luego recibe la respuesta y chequea que sea la esperada.
+ * 		  NOTA IMPORTANTE: no tengo que llamar a recibirHandshake,
+ * @PARAMS: {int} 	socket por el que realizo la comunicación.
+ * 			{uint16_t}	codigoMio Codigo del programa que llama a la funcion.
+ * 			{uint16_t}	codigoOtro Codigo del programa  al que me quiero conectar.
+ */
 int enviarHandshake (int socket, uint16_t codigoMio, uint16_t codigoOtro, t_log* logger){
 	t_package handshakeRcv;
 
@@ -135,6 +162,7 @@ char* compress(int code, char* data, uint32_t size, t_log* logger){
 		memcpy(compressPack + packageSize(0), data, size);
 		return compressPack;
 	}
+	free(compress);
 	log_error(logger,"Error al asignar espacio para el packete de salida");
 	return NULL;
 }
@@ -162,7 +190,7 @@ int enviar(int socket, uint16_t code, char* data, uint32_t size, t_log* logger){
 int recibir(int socket,t_package* mensaje, t_log* logger){
 	int headerSize = packageHeaderSize;
 	char* buffer;
-	//Recibo el primer parametro del header.
+	//Recibo el header primero
 	if(recvPkg(socket, &buffer, headerSize, logger)){
 		return EXIT_FAILURE;
 	}
@@ -176,6 +204,7 @@ int recibir(int socket,t_package* mensaje, t_log* logger){
 	if(!mensaje->size){
 		return EXIT_SUCCESS;
 	}
+	//Ahora recibo los datos de ser necesario.
 	if(recvPkg(socket, &buffer,mensaje->size, logger)){
 		return EXIT_FAILURE;
 	}
@@ -185,22 +214,36 @@ int recibir(int socket,t_package* mensaje, t_log* logger){
 }
 
 int recvPkg(int socket, char** buffer, uint32_t size, t_log* logger){
-	int recibido;
-	char* buff;
+	int recibido, recibidoTotal=0;
+	char* buff, *buffAux;
+	*buffer = NULL;
 	if(size < 1){
 		return EXIT_SUCCESS;
 	}
 	buff = (char*)malloc(sizeof(size)+1);
-	memset(buff,'\0',size + 1);
-	recibido = recv(socket, buff, size,0);
-	if(recibido < 0){
-		log_error(logger, "Error al recibir: %s",strerror(errno));
-		return EXIT_FAILURE;
-	}
-	if(recibido < size){
-		log_error(logger, "El tamanio del mensaje no coincide con el esperado.\nRecibido:%d \tEsperado:%d", recibido, size);
-		return EXIT_FAILURE;
-	}
-	*(buffer) = buff;
+	buffAux = (char*)malloc(sizeof(size)+1);
+	memset(buffAux,'\0',size + 1);
+	do{
+		memset(buff,'\0',size + 1);
+		recibido = recv(socket, buff, size,0);
+		if(recibido < 0){
+			free(buff);
+			free(buffAux);
+			log_error(logger, "Error al recibir: %s",strerror(errno));
+			return EXIT_FAILURE;
+		}if(recibido > 0){
+			memcpy((buffAux+recibidoTotal), buff, recibido);
+		}
+		recibidoTotal += recibido;
+	} while(recibidoTotal < size);
+	free(buff);
+	(*buffer) = buffAux;
 	return EXIT_SUCCESS;
+}
+
+int highestFD(int fd, int nfd){
+	if(fd >= nfd){
+		return fd + 1;
+	}
+	return nfd;
 }
