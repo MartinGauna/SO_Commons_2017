@@ -72,6 +72,14 @@ void* iniciarProgramaPorThread(void* _parameters) {
 
 	printf("Envio completado \n");
 
+	int salir = 1;
+
+	while(salir) {
+
+	//RECIBIR LA INFORMACION DEL KERNEL E IMPRIMIR EN PANTALLA
+
+	}
+
 //	int* pid = recibirStream(serverSocket, sizeof(int));
 //	printf("PID DEL PROCESO: %d\n",*pid);
 

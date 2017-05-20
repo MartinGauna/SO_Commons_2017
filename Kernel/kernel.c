@@ -85,6 +85,16 @@ int main (int argc, char *argv[]) {
 						if ((newfd = accept(socketListen, (struct sockaddr*)&addr, &addrlen)) == -1){
 							log_info(logger,"Ocurrio error al aceptar una conexion");
 						} else {
+
+							if(recibirHandshake(newfd, KERNEL_HSK, CONSOLA_HSK, logger)){
+								//ERROR
+								return EXIT_FAILURE;
+							}
+
+							if(enviarHandshake(newfd, CONSOLA_HSK, KERNEL_HSK,logger)){
+								//ERROR
+							}
+
 							FD_SET(newfd, &readset); // Agrego el nuevo socket al  select
 							log_info(logger,"Agrego un socket");
 							//Actualizo la cantidad
@@ -98,13 +108,8 @@ int main (int argc, char *argv[]) {
 					} else {
 
 						//Recibe consolas y cpus
-						if(fdSocket[i].activo == 0){
 
 //							//for(conectados=0;conectados<2;conectados++)
-//							if(recibirHandshake(newSocket, KERNEL_HSK, &codigoHandshake, logger)){
-//								//ERROR
-//								return EXIT_FAILURE;
-//							}
 //							if(!socketConsola && codigoHandshake == CONSOLA_HSK){
 //								socketConsola = newSocket;
 //								FD_SET(socketConsola, &readset);
@@ -138,7 +143,7 @@ int main (int argc, char *argv[]) {
 //
 //							}
 
-						}
+
 					}
 				  }
 				}

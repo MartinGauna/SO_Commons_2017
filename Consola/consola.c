@@ -11,7 +11,6 @@ int main(int argc, char *argv[]) {
 	configConsole* conf = (configConsole*) cargarConfiguracion("./config", 2,
 			CONSOLA, logger);
 	int socketKernel;
-	char handServer[10];
 
 	char message[PACKAGESIZE];
 	int flag = 1;
@@ -24,16 +23,20 @@ int main(int argc, char *argv[]) {
 	printf("\n");
 
 	consola_imprimir_encabezado();
-//	//Me conecto Al Kernel
-//	if(cargarSoket(conf->puerto, conf->ip, &socketKernel, logger)){
-//		//ERROR
-//	}
-//
-//	//Hago el handshake con el Kernel.
-//	handShakeCliente(socketKernel,handServer,"consola");
-//	/*if(enviarHandshake(socketKernel, CONSOLA_HSK, KERNEL_HSK,logger)){
-//		//ERROR
-//	}*/
+	//Me conecto Al Kernel
+	if (cargarSoket(conf->puerto, conf->ip, &socketKernel, logger)) {
+		//ERROR
+	}
+
+	//Hago el handshake con el Kernel.
+	if(enviarHandshake(socketKernel, CONSOLA_HSK, KERNEL_HSK,logger)){
+		//ERROR
+	}
+
+	//Hago el handshake con el Kernel.
+	if(recibirHandshake(socketKernel, CONSOLA_HSK, KERNEL_HSK,logger)){
+		//ERROR
+	}
 
 	while (flag) {
 
@@ -42,7 +45,6 @@ int main(int argc, char *argv[]) {
 		if (strcmp(message, DESCONECTAR_CONSOLA) == 0) {
 			printf("Consola desconectandose... \n");
 			flag = 0;
-			close(socketKernel);
 		}
 
 		if (strcmp(message, INICIAR_PROGRAMA) == 0) {
@@ -51,16 +53,14 @@ int main(int argc, char *argv[]) {
 
 			char* path = malloc(4096);
 			scanf("%s", path);
-
-			FILE* fp = fopen(path,"r");
-
+			FILE* fp = fopen(path, "r");
 			free(path);
 
-				if (fp != NULL) {
-					iniciarPrograma(fp,socketKernel);
-				} else {
-					puts("La ruta ingresada es invalida\n");
-				}
+			if (fp != NULL) {
+				iniciarPrograma(fp, socketKernel);
+			} else {
+				puts("La ruta ingresada es invalida\n");
+			}
 		}
 
 		if (strcmp(message, FINALIZAR_PROGRAMA) == 0) {
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 		if (strcmp(message, ENVIAR_MENSAJE) == 0) {
 			printf("Escriba el mensaje:  ");
 			fgets(message, 50, stdin);
-			if (enviar(socketKernel, 17, message, sizeof(50), logger)) { //el 17 significa una consola q solo envia mensajes
+			if (enviar(socketKernel, CONSOLA_HSK, message, sizeof(50), logger)) { //el 17 significa una consola q solo envia mensajes
 				printf("No se pudo enviar correctamente el stream \n"); // no deberia preguntar si enviar == -1 ??
 			}
 		}
