@@ -1,60 +1,76 @@
+//
+// Created by Martin Gauna on 4/2/17.
+//
 
-#include "funcionesKernel.h"
+#include "kernel.h"
 
-structParaCliente cliente;
+#define STDIN 0
+
+t_log* logger;
+t_dictionary* procesos;
 
 int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_kernel", "KERNEL", 1, LOG_LEVEL_TRACE);
 	configKernel* conf = (configKernel*)cargarConfiguracion("./config", 14, KERNEL, logger);
-//	int socketMemoria,socketFS,newSocket,socketCPU=0,socketConsola=0;
-	int socketListen;
-	int conectados, fd;
-	uint16_t codigoHandshake;
-	t_package pkg;
-	pthread_t thread_cliente;
-	FDSocket fdSocket[100];
-	printf("Se crea el Kernel\n");
+	int //socketMemoria,
+		//socketFS,
+		socketListen,
+		newSocket,
+		socketCPU=0,
+		//socketConsola=0,
+		*pSocket,
+		pidCount = 1;
+	int //conectados,
+		fd, nfd=0, terminar=0 ;
+//	uint16_t codigoHandshake;
+	//t_package pkg;
+	fd_set readSet, masterSet;
+	struct timeval timeOut;
+	timeOut.tv_sec = 10;
+	timeOut.tv_usec = 500000;
 
+
+
+	t_dictionary* consolas =  dictionary_create();
+	t_dictionary* cpus =  dictionary_create();
+	char* key;
+	t_proceso* proceso;
+
+
+
+	FD_ZERO(&masterSet);
+	FD_SET(STDIN, &masterSet);
 	//Imprimo la configuracion
 	printConfig(conf);
 
+/*
+	//Me conecto con la Memoria
+	if(cargarSoket(conf->puertoMemoria, conf->ipMemoria, &socketMemoria, logger)){
+		//ERROR
+		return EXIT_FAILURE;
+	}
+	if(enviarHandshake(socketMemoria, KERNEL_HSK, MEMORIA_HSK,logger)){
+		//ERROR
+		return EXIT_FAILURE;
+	}
+	log_debug(logger, "Conectado con la memoria.");
 
-//	//Me conecto con la Memoria
-//	if(cargarSoket(conf->puertoMemoria, conf->ipMemoria, &socketMemoria, logger)){
-//		//ERROR
-//		return EXIT_FAILURE;
-//	}
-//	if(enviarHandshake(socketMemoria, KERNEL_HSK, MEMORIA_HSK,logger)){
-//		//ERROR
-//		return EXIT_FAILURE;
-//	}
-//	log_debug(logger, "Conectado con la memoria.");
-//
-//	//Meconecto con el FS
-//	if(cargarSoket(conf->puertoFS, conf->ipFS, &socketFS, logger)){
-//		//ERROR
-//		return EXIT_FAILURE;
-//	}
-//	if(enviarHandshake(socketFS, KERNEL_HSK, FILESYSTEM_HSK,logger)){
-//		//ERROR
-//		return EXIT_FAILURE;
-//	}
-//	log_debug(logger, "Conectado con el FileSystem.");
+	//Meconecto con el FS
+	if(cargarSoket(conf->puertoFS, conf->ipFS, &socketFS, logger)){
+		//ERROR
+		return EXIT_FAILURE;
+	}
+	if(enviarHandshake(socketFS, KERNEL_HSK, FILESYSTEM_HSK,logger)){
+		//ERROR
+		return EXIT_FAILURE;
+	}
+	log_debug(logger, "Conectado con el FileSystem.");
 
-	//Inicializo Select
-	log_info(logger, "Inicializo el SELECT");
-	fd_set readset;
-	fd_set read_fds;
-	int fdmax;
-	int newfd;
-	int i;
-	struct sockaddr_in addr;
-	socklen_t addrlen = sizeof(addr);
-
-	FD_ZERO(&readset);
-	FD_ZERO(&read_fds);
-//	FD_SET(socketMemoria, &readset);
-//	FD_SET(socketFS, &readset);
+//	FD_SET(socketMemoria, &readSet);
+	nfd = highestFD(socketMemoria,nfd);
+//	FD_SET(socketFS, &readSet);
+	nfd = highestFD(socketFS,nfd);
+ */
 
 	//Me pongo a escuchar conecciones de consolas y CPUs
 	if(escuchar(conf->puerto_prog, &socketListen, logger)){
@@ -62,97 +78,222 @@ int main (int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	fdmax = socketListen;
-	FD_SET(socketListen, &readset);
+//	for(conectados=0;conectados<1;conectados++){
+//
+//		if(aceptar(socketListen, &newSocket, logger)){
+//			//ERROR
+//			return EXIT_FAILURE;
+//		}
+//		if(recibirHandshake(newSocket, KERNEL_HSK, &codigoHandshake, logger)){
+//			//ERROR
+//			return EXIT_FAILURE;
+//		}
+//		if(!socketConsola && codigoHandshake == CONSOLA_HSK){
+//			socketConsola = newSocket;
+//			FD_SET(socketConsola, &readSet);
+//			nfd = highestFD(socketConsola,nfd);
+//		}else if(!socketCPU && codigoHandshake == CPU_HSK){
+//			socketCPU = newSocket;
+//			FD_SET(socketCPU, &readSet);
+//			nfd = highestFD(socketCPU,nfd);
+//		}else{
+//			close(newSocket); //No se reconoce el codigo del Handshake.
+//		}
+//	}
+	FD_SET(socketListen, &masterSet);
+	nfd = highestFD(socketCPU,nfd);
+	while(!terminar){
+		readSet = masterSet;
+		fd = select(nfd, &readSet, NULL, NULL, &timeOut);
 
-	//Me mantengo en el bucle para asi poder procesar cambios en los sockets
-	while(1) {
-		//Copio los sockets y me fijo si alguno tiene cambios, si no hay itero de vuelta
-		read_fds = readset; // copialo
-		if (select(fdmax+1, &read_fds, NULL, NULL, NULL)<0) {
-			if (errno != EINTR){
-				perror("select error");
-				return 1;
+		if(fd < 0){
+			log_error(logger, "Error en el select: %s", strerror(errno));
+			terminar = 1;
+
+		} else if (fd > 0 ){
+			//Si el socket
+			if(FD_ISSET(socketListen, &readSet)){
+				newSocket = aceptarConexion(socketListen, &masterSet, &nfd, cpus, consolas, &pidCount, logger);
+				if(newSocket < 0) {
+					//TODO ERROR - chequear que tenemos que hacer en este caso. Crear un nuevo socket para listen talvez?
+					//terminar = 1;
+					//log_error(logger, "Error en el accept: %s", strerror(errno));
+				} else {
+//					key = string_itoa(newSocket);
+//					proceso = dictionary_get(consolas, key);
+//					if(pSocket != NULL) {
+//						//es un socket de consola
+//						//atenderConsola(proceso,pidCount, logger);
+//					} else {
+//						pSocket = dictionary_get(cpus, key);
+//						if(pSocket != NULL) {
+//							//Es un socket CPU
+//						}
+//					}
+				}
+
 			}
-		}else{
-			//Recorro los sockets con cambios
-			for(i = 0; i <= fdmax; i++) {
-				//Detecto si hay datos en un socket especifico
-				if (FD_ISSET(i, &read_fds)) {
-					//Si es el socket de escucha proceso el nuevo socket
-					if (i == socketListen) {
-						addrlen = sizeof(addr);
-						if ((newfd = accept(socketListen, (struct sockaddr*)&addr, &addrlen)) == -1){
-							log_info(logger,"Ocurrio error al aceptar una conexion");
-						} else {
-
-							if(recibirHandshake(newfd, KERNEL_HSK, CONSOLA_HSK, logger)){
-								//ERROR
-								return EXIT_FAILURE;
-							}
-
-							if(enviarHandshake(newfd, CONSOLA_HSK, KERNEL_HSK,logger)){
-								//ERROR
-							}
-
-							FD_SET(newfd, &readset); // Agrego el nuevo socket al  select
-							log_info(logger,"Agrego un socket");
-							//Actualizo la cantidad
-							if (newfd > fdmax) {
-								fdmax = newfd;
-							}
-
-							log_trace(logger, "Nueva conexion de %s en  el socket %d", inet_ntoa(addr.sin_addr),newfd);
-
-						}
-					} else {
-
-						//Recibe consolas y cpus
-
-//							//for(conectados=0;conectados<2;conectados++)
-//							if(!socketConsola && codigoHandshake == CONSOLA_HSK){
-//								socketConsola = newSocket;
-//								FD_SET(socketConsola, &readset);
-//							}else if(!socketCPU && codigoHandshake == CPU_HSK){
-//								socketCPU = newSocket;
-//								FD_SET(socketCPU, &readset);
-//							}else{
-//								close(newSocket); //No se reconoce el codigo del Handshake.
-//							}
-//
-////******* Aca hay un tema importante para resolver, si tenemos socketCPU y con el for me restringe a que haya solo una CPU conectada y no varias
-////******* Pero usar el vector es de negros, asi que hay que arreglar esto, mas que nada para despues armar bien la estructura que se le pasa al thread
-////******* Y poder solucionar el tema de el envio d msj a todas las CPU que esta comentado dentro del thread
-//
-//							fdSocket[i].activo = TRUE;
-//							fdSocket[i].fd = i;
-//							strcpy(fdSocket[i].nombre,codigoHandshake);
-//							printf("%s conectado. Esperando mensajes: \n", codigoHandshake);
-//
-//						}else{
-//						//Si es un socket existente
-//
-//							cliente.socketCliente = i;
-//							cliente.master = readset;
-//							cliente.socketFS = socketFS;
-//							cliente.socketM = socketMemoria;
-//							//cliente.fdSocket[100]= fdSocket[100];
-//							cliente.fdmax = fdmax;
-//
-//							pthread_create(&thread_cliente, NULL, (void*)atenderCliente, &cliente);
-//
-//							}
-
-
-					}
-				  }
+			else if(FD_ISSET(STDIN, &readSet)) {
+				char c;
+				while((c=getchar()) != EOF){
+					putchar(c);
 				}
 			}
+		}
 
+
+//		if(recibir(socketConsola, &pkg, logger)){
+//			//ERROR
+//			closeConections(socketCPU, socketFS, socketMemoria, socketConsola);
+//			return EXIT_FAILURE;
+//		}
+//		printf("Mensaje recibido de la consola: %s\n",pkg.data);
+
+//		log_debug(logger, "se envia el mensaje a la CPU");
+//		if(enviar(socketCPU, HOLA, pkg.data, pkg.size, logger)){
+//			//ERROR
+//			closeConections(socketCPU, socketFS, socketMemoria, socketConsola);
+//			return EXIT_FAILURE;
+//		}
+//		log_debug(logger, "se envia el mensaje al File System");
+//		if(enviar(socketFS, HOLA, pkg.data, pkg.size, logger)){
+//			//ERROR
+//			closeConections(socketCPU, socketFS, socketMemoria, socketConsola);
+//			return EXIT_FAILURE;
+//		}
+//		log_debug(logger, "se envia el mensaje a la Memoria");
+//		if(enviar(socketMemoria, HOLA, pkg.data, pkg.size, logger)){
+//			//ERROR
+//			closeConections(socketCPU, socketFS, socketMemoria, socketConsola);
+//			return EXIT_FAILURE;
+//		}
+//		free(pkg.data);
+	}
 	printf("Ingrese una tecla para finalizar.\n");
 	getchar();
-//	return EXIT_SUCCESS;
-
-	}
+	dictionary_destroy_and_destroy_elements(cpus, free);
+//	dictionary_destroy_and_destroy_elements(consolas, free);
+	return EXIT_SUCCESS;
 }
 
+void liberar_memoria(t_log* logger, configKernel* config) {
+	free(logger);
+	free(config);
+}
+
+void closeConections(int socketCPU, int socketFS, int socketMemoria, int socketConsola){
+	close(socketCPU);
+	close(socketFS);
+	close(socketMemoria);
+	close(socketConsola);
+}
+
+void printConfig(configKernel* conf){
+	puts("Kernel.\n");
+	printf("ALGORITMO: %s\n",conf->algoritmo);
+	printf("GRADO MULTIPROGRAMACION: %d\n",conf->gradoMultiprog);
+	printf("IP_FILESYSTEM: %s\n",conf->ipFS);
+	printf("IP_MEMORIA: %s\n",conf->ipMemoria);
+	printf("PUERTO_CPU: %d\n",conf->puertoCPU);
+	printf("PUERTO_FS: %d\n",conf->puertoFS);
+	printf("PUERTO_MEMORIA: %d\n",conf->puertoMemoria);
+	printf("PUERTO_PROG: %d\n",conf->puerto_prog);
+	printf("QUANTUM: %d\n",conf->quantum);
+	printf("QUANTUM SLEEP: %d\n",conf->quantumSleep);
+	printf("SEM IDS: %s\n",conf->semIds);
+	printf("SEM INITS%s\n",conf->semInits);
+	printf("SHARED_VARS: %s\n",conf->sharedVars);
+	printf("STACK_SIZE: %d\n",conf->stackSize);
+}
+
+/**
+ * Acepta conexiones de las consolas y las cpus
+ *
+ */
+int aceptarConexion(int socketListen, fd_set* masterSet, int* nfd, t_dictionary* cpus, t_dictionary* consolas, int* pidCount, t_log* logger){
+
+	int newSocket;
+	char* key;
+	uint16_t codigoHandshake;
+//	t_proceso* proc;
+
+	if(aceptar(socketListen, &newSocket, logger)){
+		//ERROR
+		return -1;
+	}
+	if(recibirHandshake(newSocket, KERNEL_HSK, &codigoHandshake, logger)){
+		//ERROR
+		return -1;
+	}
+
+	//Se conecta una consola
+	if(codigoHandshake == CONSOLA_HSK){
+
+		atenderConsola(newSocket, pidCount);
+		dictionary_put(consolas, key, newSocket);
+	}else if(codigoHandshake == CPU_HSK){
+//		FD_SET(*newSocket, readSet);
+//		highestFD(*newSocket, *nfd);
+//		dictionary_put(cpus, key, newSocket);
+	}else{ //No se reconoce el codigo del Handshake.
+		log_warning(logger, "Se intento conectar un proceso no reconocido.");
+		close(newSocket);
+		return -1;
+	}
+	return newSocket;
+}
+
+int atenderConsola(int socket, int* pidCount){
+	t_package pkg;
+	t_proceso* proc;
+
+	if(recibir(socket, &pkg, logger)){
+		//ERROR
+		return EXIT_FAILURE;
+	}
+	if(pkg.size != 0 && pkg.data != NULL){
+		//Proceso Nuevo a Ejecutar
+		if(pkg.code == INICIAR_PROG){
+			proc = (t_proceso*)malloc(sizeof(t_proceso));
+			proc->pid = crearPidSock(pidCount);
+			proc->ansisop = pkg.data;
+		}
+		else if (pkg.code == FINALIZAR_PROG){
+			pkg.data;
+			log_debug(logger, "Se pide finalizar el siguiente proceso: %s", pkg.data);
+			dictionary_get(procesos, pkg.data);
+		}
+	}
+	return EXIT_SUCCESS;
+}
+
+//t_proceso* crearProceso(int socket, int* pidCount, t_log* logger){
+//	t_package pkg;
+//	t_proceso * proc = NULL;
+//	proc->socket = socket;
+//	proc->pid = crearPidSock(pidCount);
+//
+//	//Espero recibir el codigo del nuevo proceso.
+//	if(recibir(socket, &pkg, logger)){
+//		//ERROR
+//		return NULL;
+//	}
+//	if(pkg.code == INICIAR_PROG){
+//
+//		if(pkg.size != 0 && pkg.data != NULL){
+//			proc = (t_proceso *)malloc(sizeof(t_proceso));
+//			proc->socket = socket;
+//			proc->pid = crearPidSock(pidCount);
+//			proc->ansisop = pkg.data;
+//		}
+//	}
+//
+//	return proc;
+//}
+
+int crearPidSock(int* pidCount){
+	int res = *pidCount;
+	//TODO Agregar checkeo para max int value o es inecesario?
+	*pidCount = (*pidCount) + 1;
+	return res;
+}
