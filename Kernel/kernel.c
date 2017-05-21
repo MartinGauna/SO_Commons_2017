@@ -4,10 +4,15 @@
 
 #include "kernel.h"
 
-#define STDIN 0
+
 
 t_log* logger;
-t_dictionary* procesos;
+t_list* newQueue;
+t_queue* readyQueue;
+t_queue* finishQueue;
+
+
+
 
 int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_kernel", "KERNEL", 1, LOG_LEVEL_TRACE);
@@ -29,14 +34,13 @@ int main (int argc, char *argv[]) {
 	timeOut.tv_sec = 10;
 	timeOut.tv_usec = 500000;
 
-
-
 	t_dictionary* consolas =  dictionary_create();
 	t_dictionary* cpus =  dictionary_create();
-	char* key;
-	t_proceso* proceso;
 
 
+	newQueue = list_create();
+	readyQueue = queue_create();
+	finishQueue  = queue_create();
 
 	FD_ZERO(&masterSet);
 	FD_SET(STDIN, &masterSet);
@@ -134,45 +138,14 @@ int main (int argc, char *argv[]) {
 
 			}
 			else if(FD_ISSET(STDIN, &readSet)) {
-				char c;
-				while((c=getchar()) != EOF){
-					putchar(c);
-				}
+				atenderConsolaKernel();
 			}
 		}
-
-
-//		if(recibir(socketConsola, &pkg, logger)){
-//			//ERROR
-//			closeConections(socketCPU, socketFS, socketMemoria, socketConsola);
-//			return EXIT_FAILURE;
-//		}
-//		printf("Mensaje recibido de la consola: %s\n",pkg.data);
-
-//		log_debug(logger, "se envia el mensaje a la CPU");
-//		if(enviar(socketCPU, HOLA, pkg.data, pkg.size, logger)){
-//			//ERROR
-//			closeConections(socketCPU, socketFS, socketMemoria, socketConsola);
-//			return EXIT_FAILURE;
-//		}
-//		log_debug(logger, "se envia el mensaje al File System");
-//		if(enviar(socketFS, HOLA, pkg.data, pkg.size, logger)){
-//			//ERROR
-//			closeConections(socketCPU, socketFS, socketMemoria, socketConsola);
-//			return EXIT_FAILURE;
-//		}
-//		log_debug(logger, "se envia el mensaje a la Memoria");
-//		if(enviar(socketMemoria, HOLA, pkg.data, pkg.size, logger)){
-//			//ERROR
-//			closeConections(socketCPU, socketFS, socketMemoria, socketConsola);
-//			return EXIT_FAILURE;
-//		}
-//		free(pkg.data);
 	}
+	dictionary_destroy(consolas);
+	dictionary_destroy(cpus);
 	printf("Ingrese una tecla para finalizar.\n");
 	getchar();
-	dictionary_destroy_and_destroy_elements(cpus, free);
-//	dictionary_destroy_and_destroy_elements(consolas, free);
 	return EXIT_SUCCESS;
 }
 
@@ -228,9 +201,7 @@ int aceptarConexion(int socketListen, fd_set* masterSet, int* nfd, t_dictionary*
 
 	//Se conecta una consola
 	if(codigoHandshake == CONSOLA_HSK){
-
 		atenderConsola(newSocket, pidCount);
-		dictionary_put(consolas, key, newSocket);
 	}else if(codigoHandshake == CPU_HSK){
 //		FD_SET(*newSocket, readSet);
 //		highestFD(*newSocket, *nfd);
@@ -247,53 +218,56 @@ int atenderConsola(int socket, int* pidCount){
 	t_package pkg;
 	t_proceso* proc;
 
+	//Los mensajes de la consola se atienden inmediatamente porque lo que se tiene que hacer es algo rapido siempre.
 	if(recibir(socket, &pkg, logger)){
 		//ERROR
 		return EXIT_FAILURE;
 	}
-	if(pkg.size != 0 && pkg.data != NULL){
-		//Proceso Nuevo a Ejecutar
-		if(pkg.code == INICIAR_PROG){
-			proc = (t_proceso*)malloc(sizeof(t_proceso));
-			proc->pid = crearPidSock(pidCount);
-			proc->ansisop = pkg.data;
-		}
-		else if (pkg.code == FINALIZAR_PROG){
-			pkg.data;
-			log_debug(logger, "Se pide finalizar el siguiente proceso: %s", pkg.data);
-			dictionary_get(procesos, pkg.data);
-		}
+	if(pkg.code == INICIAR_PROG){
+		proc = crearProceso(socket, pidCount, pkg.data);
+		list_add(newQueue, proc);
+		//TODO Falta el cheque de memoria para ver si se puede agregar el proceso y ver el nivel de multiprog para ver a que lista agregarlo
+		char pid[PID_STR_COUNT];
+		itoa(proc->pcb.pid, pid, 10);
+		log_debug(logger, "Nuevo procesocreado. PID:%d",proc->pcb.pid);
+		enviar(socket, ACEPTAR_PROG, pid, strlen(pid), logger);
 	}
+	else if (pkg.code == FINALIZAR_PROG){
+		//TODO Buscar el proceso en todas las listas(new, ready)
+	}
+	else if (pkg.code == MATAR_PROCESOS){
+		//TODO Matar todos los procesos de una consola
+	}
+	else{
+		log_warning(logger,"Codigo recibido por una Consola no reconocido.Codigo: %d", pkg.code);
+	}
+
 	return EXIT_SUCCESS;
 }
 
-//t_proceso* crearProceso(int socket, int* pidCount, t_log* logger){
-//	t_package pkg;
-//	t_proceso * proc = NULL;
-//	proc->socket = socket;
-//	proc->pid = crearPidSock(pidCount);
-//
-//	//Espero recibir el codigo del nuevo proceso.
-//	if(recibir(socket, &pkg, logger)){
-//		//ERROR
-//		return NULL;
-//	}
-//	if(pkg.code == INICIAR_PROG){
-//
-//		if(pkg.size != 0 && pkg.data != NULL){
-//			proc = (t_proceso *)malloc(sizeof(t_proceso));
-//			proc->socket = socket;
-//			proc->pid = crearPidSock(pidCount);
-//			proc->ansisop = pkg.data;
-//		}
-//	}
-//
-//	return proc;
-//}
+t_proceso* crearProceso(int socket, int* pidCount, char* ansisop) {
+	t_proceso* proc = (t_proceso*)malloc(sizeof(t_proceso));
+
+	//TODO Crear un t_pid que tenga sentido
+	proc->consolaSocket = socket;
+	proc->pcb.pid = crearPidSock(pidCount);
+	proc->pcb.ansisop = ansisop;
+
+	return proc;
+}
 
 int crearPidSock(int* pidCount){
 	int res = *pidCount;
 	//TODO Agregar checkeo para max int value o es inecesario?
 	*pidCount = (*pidCount) + 1;
 	return res;
+}
+
+int atenderConsolaKernel(){
+	char c;
+	while((c=getchar()) != EOF){
+		putchar(c);
+	}
+	putchar('\n');
+	return EXIT_SUCCESS;
 }
