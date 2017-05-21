@@ -78,7 +78,7 @@ typedef struct {
  */
 int escuchar(int puerto, int* socket, t_log* logger);
 /**
- * @NAME: escuchar
+ * @NAME: aceptar
  * @DESC: Acepta una conexion sobre un socket que esta haciendo un listen. por lo que hay que llamar a escuchar antes que a esta funcion.
  * @PARAMS: {int} 	socket Socket que esta escuchando
  * 			{int *}	newSocket Nuevo sokcet generado al hacer el accept.
