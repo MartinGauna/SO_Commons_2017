@@ -5,6 +5,9 @@
 #ifndef TP_2017_1C_LOSPANCHOS_KERNEL_H
 #define TP_2017_1C_LOSPANCHOS_KERNEL_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "../Commons/configuracion.h"
 #include "../Commons/socket.h"
 #include "../Commons/PCB.h"

@@ -4,15 +4,10 @@
 
 #include "kernel.h"
 
-
-
 t_log* logger;
 t_list* newQueue;
 t_queue* readyQueue;
 t_queue* finishQueue;
-
-
-
 
 int main (int argc, char *argv[]) {
 	t_log* logger = log_create("log_kernel", "KERNEL", 1, LOG_LEVEL_TRACE);
@@ -228,7 +223,8 @@ int atenderConsola(int socket, int* pidCount){
 		list_add(newQueue, proc);
 		//TODO Falta el cheque de memoria para ver si se puede agregar el proceso y ver el nivel de multiprog para ver a que lista agregarlo
 		char pid[PID_STR_COUNT];
-		itoa(proc->pcb.pid, pid, 10);
+		snprintf(pid, PID_STR_COUNT, "%d", proc->pcb.pid);
+//		itoa(proc->pcb.pid, pid, 10);
 		log_debug(logger, "Nuevo procesocreado. PID:%d",proc->pcb.pid);
 		enviar(socket, ACEPTAR_PROG, pid, strlen(pid), logger);
 	}
