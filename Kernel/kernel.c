@@ -76,7 +76,7 @@ int main (int argc, char *argv[]) {
 		//ERROR
 		return EXIT_FAILURE;
 	}
-
+	log_trace(logger, "Estoy escuchando nuevas conexiones.");
 //	for(conectados=0;conectados<1;conectados++){
 //
 //		if(aceptar(socketListen, &newSocket, logger)){
@@ -100,7 +100,8 @@ int main (int argc, char *argv[]) {
 //		}
 //	}
 	FD_SET(socketListen, &masterSet);
-	nfd = highestFD(socketCPU,nfd);
+	nfd = highestFD(socketListen,nfd);
+//	log_trace(logger, "FD detectados por el select: %d.", fd);
 	while(!terminar){
 		readSet = masterSet;
 		fd = select(nfd, &readSet, NULL, NULL, &timeOut);
@@ -112,6 +113,7 @@ int main (int argc, char *argv[]) {
 		} else if (fd > 0 ){
 			//Si el socket
 			if(FD_ISSET(socketListen, &readSet)){
+				log_debug(logger, "Nueva conexion detectada.");
 				newSocket = aceptarConexion(socketListen, &masterSet, &nfd, cpus, consolas, &pidCount, logger);
 				if(newSocket < 0) {
 					//TODO ERROR - chequear que tenemos que hacer en este caso. Crear un nuevo socket para listen talvez?
