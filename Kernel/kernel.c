@@ -18,7 +18,7 @@ int main (int argc, char *argv[]) {
 		newSocket,
 		socketCPU=0,
 		//socketConsola=0,
-		*pSocket,
+		//*pSocket,
 		pidCount = 1;
 	int //conectados,
 		fd, nfd=0, terminar=0 ;
@@ -181,7 +181,6 @@ void printConfig(configKernel* conf){
 int aceptarConexion(int socketListen, fd_set* masterSet, int* nfd, t_dictionary* cpus, t_dictionary* consolas, int* pidCount, t_log* logger){
 
 	int newSocket;
-	char* key;
 	uint16_t codigoHandshake;
 //	t_proceso* proc;
 
@@ -226,8 +225,8 @@ int atenderConsola(int socket, int* pidCount){
 //		char pid[PID_STR_COUNT];
 //		snprintf(pid, PID_STR_COUNT, "%d", proc->pcb.pid);
 //		itoa(proc->pcb.pid, pid, 10);
-		pid = string_itoa(proc->pcb.pid);
-		log_debug(logger, "Nuevo procesocreado. PID:%d",proc->pcb.pid);
+		pid = string_itoa(proc->pcb.PID);
+		log_debug(logger, "Nuevo procesocreado. PID:%d",proc->pcb.PID);
 		enviar(socket, ACEPTAR_PROG, pid, strlen(pid), logger);
 		free(pid);
 	}
@@ -249,9 +248,8 @@ t_proceso* crearProceso(int socket, int* pidCount, char* ansisop) {
 
 	//TODO Crear un t_pid que tenga sentido
 	proc->consolaSocket = socket;
-	proc->pcb.pid = crearPidSock(pidCount);
-	proc->pcb.ansisop = ansisop;
-
+	proc->pcb.PID = crearPidSock(pidCount);
+	proc->pcb.codigo = ansisop;
 	return proc;
 }
 
