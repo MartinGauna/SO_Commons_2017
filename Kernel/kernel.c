@@ -222,11 +222,14 @@ int atenderConsola(int socket, int* pidCount){
 		proc = crearProceso(socket, pidCount, pkg.data);
 		list_add(newQueue, proc);
 		//TODO Falta el cheque de memoria para ver si se puede agregar el proceso y ver el nivel de multiprog para ver a que lista agregarlo
-		char pid[PID_STR_COUNT];
-		snprintf(pid, PID_STR_COUNT, "%d", proc->pcb.pid);
+		char* pid;
+//		char pid[PID_STR_COUNT];
+//		snprintf(pid, PID_STR_COUNT, "%d", proc->pcb.pid);
 //		itoa(proc->pcb.pid, pid, 10);
+		pid = string_itoa(proc->pcb.pid);
 		log_debug(logger, "Nuevo procesocreado. PID:%d",proc->pcb.pid);
 		enviar(socket, ACEPTAR_PROG, pid, strlen(pid), logger);
+		free(pid);
 	}
 	else if (pkg.code == FINALIZAR_PROG){
 		//TODO Buscar el proceso en todas las listas(new, ready)
