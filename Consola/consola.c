@@ -2,6 +2,8 @@
 
 #include <ctype.h>
 
+#define TAMANIO_ARCHIVO 4096
+
 t_log* logger;
 pthread_mutex_t lock;
 
@@ -13,14 +15,12 @@ int main(int argc, char *argv[]) {
 	int socketKernel;
 
 	char message[PACKAGESIZE];
-	int flag = 1;
+	int ejecutar = 1;
 
 	printf("Configuracion:\n");
 	printf("IP_KERNEL: %s\n", conf->ip);
 	printf("PUERTO KERNEL: %d\n", conf->puerto);
-	printf("\n");
-	printf("\n");
-	printf("\n");
+	printf("\n\n\n");
 
 	consola_imprimir_encabezado();
 	//Me conecto Al Kernel
@@ -33,25 +33,22 @@ int main(int argc, char *argv[]) {
 		//ERROR
 	}
 
-	//Hago el handshake con el Kernel.
-	if(recibirHandshake(socketKernel, CONSOLA_HSK, KERNEL_HSK,logger)){
-		//ERROR
-	}
-
-	while (flag) {
+	while (ejecutar) {
 
 		fgets(message, PACKAGESIZE, stdin);
 
 		if (strcmp(message, DESCONECTAR_CONSOLA) == 0) {
-			printf("Consola desconectandose... \n");
-			flag = 0;
+			log_info(logger, "Consola desconectandose...");
+			ejecutar = 0;
 		}
 
 		if (strcmp(message, INICIAR_PROGRAMA) == 0) {
+//			log_info(logger, "Inicio un programa AnSISOP");
+//			log_info(logger, "Indique el path del programa que desea iniciar:");
 			printf("Inicio un programa AnSISOP \n");
 			printf("Indique el path del programa que desea iniciar:  ");
 
-			char* path = malloc(4096);
+			char* path = malloc(TAMANIO_ARCHIVO);
 			scanf("%s", path);
 			FILE* fp = fopen(path, "r");
 			free(path);
@@ -59,24 +56,25 @@ int main(int argc, char *argv[]) {
 			if (fp != NULL) {
 				iniciarPrograma(fp, socketKernel);
 			} else {
+//				log_warning(logger, "La ruta ingresada es invalida:");
 				puts("La ruta ingresada es invalida\n");
 			}
 		}
 
 		if (strcmp(message, FINALIZAR_PROGRAMA) == 0) {
-			printf("Use comando finalizar programa \n");
+			printf("Use comando finalizar programa.\n");
 		}
 
 		if (strcmp(message, LIMPIAR_MENSAJE) == 0) {
-			printf("Limpio la consola de mensajes \n");
+			printf("Limpio la consola de mensajes.\n");
 			system("clear");
 		}
 
 		if (strcmp(message, ENVIAR_MENSAJE) == 0) {
-			printf("Escriba el mensaje:  ");
+			printf("Escriba el mensaje:\t");
 			fgets(message, 50, stdin);
-			if (enviar(socketKernel, CONSOLA_HSK, message, sizeof(50), logger)) { //el 17 significa una consola q solo envia mensajes
-				printf("No se pudo enviar correctamente el stream \n"); // no deberia preguntar si enviar == -1 ??
+			if (enviar(socketKernel, CONSOLA_HSK, message, sizeof(50), logger)) {
+				log_error(logger, "No se pudo enviar correctamente el stream ");
 			}
 		}
 
