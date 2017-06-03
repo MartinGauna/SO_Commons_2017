@@ -15,6 +15,7 @@
 #include <commons/config.h>
 #include <commons/collections/list.h>
 #include <commons/collections/queue.h>
+#include <parser/metadata_program.h>
 
 #define STDIN 0
 #define PID_STR_COUNT 20+1
@@ -41,7 +42,7 @@ void liberar_memoria(t_log* logger, configKernel* config);
 void closeConections(int socketCPU, int socketFS, int socketMemoria, int socketConsola);
 void printConfig(configKernel* conf);
 int aceptarConexion(int socketListen,fd_set* readSet,int* nfd, t_dictionary* cpus, t_dictionary* consolas,int* pidCount, t_log* logger);
-
+void crearPCB(t_pcb* pcb, char* ansisop, int* pid, int socketConsola);
 
 int atenderConsola(int socket, int* pidCount);
 t_proceso* crearProceso(int socket, int* pidCount, char* ansisop);

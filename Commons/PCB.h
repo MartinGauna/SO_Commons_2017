@@ -59,7 +59,9 @@ typedef struct {
 		void* fileTable; //File Table, Referencia a la tabla de archivos
 		void* stackPointer; //Stack Pointer
 		int exitCode; //Exit Code
-		char* codigo; // codigo AnsisOP
+		int socketConsola;
+		int consolaID;
+		int socketCPU;
 } t_pcb;
 
 t_pcb * crear_pcb(int pid);
