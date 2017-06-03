@@ -9,6 +9,7 @@
 #define PCB_H_
 
 #include <stdlib.h>
+#include <parser/metadata_program.h>
 
 enum exit_code {
 	SIN_DEFINIR = -20,
@@ -21,15 +22,43 @@ enum exit_code {
 	NO_READ_PRIVILEGE,
 	NO_OPEN_PRIVILEGE,
 	NO_RESOURCES,
-	SUCCESSFUL
+	SUCCESSFUL,
+	NUEVO
 };
 
 typedef struct {
-		int	PID;
-		int PC; //Program Counter
-		void* FT; //File Table, Referencia a la tabla de archivos
-		void* SP; //Stack Pointer
-		int EC; //Exit Code
+
+	int comienzo;
+	int offset;
+
+} t_registroIndiceCodigo;
+
+typedef struct {
+
+	int pagina;
+	int offset;
+	int size;
+
+} t_posicionMemoria;
+
+typedef struct {
+
+	int argumentos;		//lista de argumentos
+	int variables;		//lista de variables
+	int direccionRetorno;
+	t_posicionMemoria posicionMemoria;
+
+} t_indiceStack;
+
+typedef struct {
+		int	pid;
+		int programCounter; //Program Counter
+		t_registroIndiceCodigo* indiceCodigo;
+		t_indiceStack* indiceStack;
+		int paginasDeCodigo;
+		void* fileTable; //File Table, Referencia a la tabla de archivos
+		void* stackPointer; //Stack Pointer
+		int exitCode; //Exit Code
 		char* codigo; // codigo AnsisOP
 } t_pcb;
 
