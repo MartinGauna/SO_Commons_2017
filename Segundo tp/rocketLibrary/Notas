@@ -1,0 +1,29 @@
+Importante:
+Ir al proyecto que quieran linkear la biblioteca>propiedades>C General>Paths and Symbols
+>References> Agregan rocketLibrary como referencia
+
+Ademas tienen que hacer lo siguiente:
+Para poder correr la biblioteca sin ejecutar EXPORT todo el tiempo:
+
+
+1)sudo apt-get install gedit
+2)gedit .bashrc
+3)al final del archivo poner:
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH=UBICACION DEL TP/rocketLibrary/Debug (Ubicacion del archivo .SO)
+4) guardar y en consola poner gedit .bashrc &
+
+Comprobar con echo $LD_LIBRARY_PATH
+
+Para poder compilar el proyecto que use la biblioteca desde eclipse:
+1)Click en la flechita a la derecha del boton de compilar/ejecutar>>Run Configurations
+2)Environment>New
+3)Agregar LD_LIBRARY_PATH como key y como valor poner la ruta anterior del archivo .so de la biblioteca
+
+
+//modelo path para agregar en Run Configuration 
+
+${workspace_loc:rocketLibrary/Debug}
+
+
+
+		

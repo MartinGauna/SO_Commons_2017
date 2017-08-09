@@ -1,0 +1,15 @@
+begin
+	variables a, f, b, i, u, c
+	alocar a 100
+	abrir f LEC /largeFile.bin
+	i=0
+	u=33
+	:foralocar
+	alocar b 100
+	i=i+1
+	c=u-i
+	jnz c foralocar
+	escribir f a 1000
+	cerrar f
+	liberar a
+end

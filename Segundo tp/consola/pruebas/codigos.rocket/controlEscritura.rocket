@@ -1,0 +1,9 @@
+#!/usr/bin/ansisop
+begin
+	variables f, a
+	alocar a 100
+	abrir f CL /archivo.bin
+	escribir f a 100
+	liberar a
+	cerrar f
+end

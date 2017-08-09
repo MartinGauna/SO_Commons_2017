@@ -1,0 +1,5 @@
+begin
+	variables a
+
+	alocar a 400
+end

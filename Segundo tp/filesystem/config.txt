@@ -1,0 +1,2 @@
+PUERTO=5003
+PUNTO_MONTAJE=/home/utnso/Escritorio/ansisop-parser/programas-ejemplo/evaluacion-final-esther/FS-ejemplo/FS/

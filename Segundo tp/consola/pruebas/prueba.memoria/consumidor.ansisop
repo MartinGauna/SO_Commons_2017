@@ -1,0 +1,11 @@
+begin
+	:etiqueta
+
+	wait c
+		prints n !colas
+	signal b
+
+	#Ciclar indefinidamente
+	goto etiqueta
+
+end
